@@ -8,15 +8,24 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<'dialer' | 'history'>('dialer');
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-md mx-auto">
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: 'url("/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png")',
+        backgroundColor: '#D25B70', // Fallback color matching the image
+      }}
+    >
+      {/* Semi-transparent overlay for better readability */}
+      <div className="absolute inset-0 bg-black/30" />
+      
+      <div className="max-w-md mx-auto relative z-10">
         {/* Content */}
         <div className="mt-6">
           {activeTab === 'dialer' ? <Dialer /> : <CallHistory />}
         </div>
 
         {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-200">
           <div className="max-w-md mx-auto flex justify-around">
             <button
               onClick={() => setActiveTab('dialer')}
