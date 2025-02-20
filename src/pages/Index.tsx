@@ -99,10 +99,10 @@ const Index = () => {
           </button>
         </div>
 
-        {/* Services Section */}
-        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8">
+        {/* Haircut Services Section */}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
           <h2 className="text-2xl font-semibold text-white mb-6">
-            Our Services
+            Haircut Services
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="text-gray-200">
@@ -124,6 +124,39 @@ const Index = () => {
               <h3 className="text-xl font-semibold mb-2">Hair & Beard Combo</h3>
               <p className="mb-1">Complete grooming package</p>
               <p className="text-callGreen">$45</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Massage Services Section */}
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
+          <h2 className="text-2xl font-semibold text-white mb-6">
+            Massage Services
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="text-gray-200">
+              <h3 className="text-xl font-semibold mb-2">Head Massage</h3>
+              <p className="mb-1">Relaxing scalp and neck massage</p>
+              <p className="mb-2 text-sm text-gray-300">Duration: 20 minutes</p>
+              <p className="text-callGreen">$25</p>
+            </div>
+            <div className="text-gray-200">
+              <h3 className="text-xl font-semibold mb-2">Face Massage</h3>
+              <p className="mb-1">Rejuvenating facial massage</p>
+              <p className="mb-2 text-sm text-gray-300">Duration: 15 minutes</p>
+              <p className="text-callGreen">$20</p>
+            </div>
+            <div className="text-gray-200">
+              <h3 className="text-xl font-semibold mb-2">Shoulder & Back</h3>
+              <p className="mb-1">Stress-relieving upper body massage</p>
+              <p className="mb-2 text-sm text-gray-300">Duration: 30 minutes</p>
+              <p className="text-callGreen">$35</p>
+            </div>
+            <div className="text-gray-200">
+              <h3 className="text-xl font-semibold mb-2">Premium Package</h3>
+              <p className="mb-1">Complete relaxation treatment</p>
+              <p className="mb-2 text-sm text-gray-300">Duration: 45 minutes</p>
+              <p className="text-callGreen">$60</p>
             </div>
           </div>
         </div>
