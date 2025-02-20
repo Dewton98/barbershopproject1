@@ -2,11 +2,13 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { Clock } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<'booking' | 'history'>('booking');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
+  const { toast } = useToast();
 
   const availableTimes = [
     '09:00', '10:00', '11:00', '12:00', 
