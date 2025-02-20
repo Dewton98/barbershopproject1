@@ -8,6 +8,7 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<'booking' | 'history'>('booking');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedService, setSelectedService] = useState<string>('');
   const { toast } = useToast();
 
   const availableTimes = [
@@ -16,10 +17,10 @@ const Index = () => {
   ];
 
   const handleBooking = () => {
-    if (!selectedDate || !selectedTime) {
+    if (!selectedDate || !selectedTime || !selectedService) {
       toast({
         title: "Error",
-        description: "Please select both date and time",
+        description: "Please select date, time and service type",
         variant: "destructive"
       });
       return;
@@ -27,7 +28,7 @@ const Index = () => {
 
     toast({
       title: "Booking Confirmed",
-      description: `Your appointment is scheduled for ${selectedDate} at ${selectedTime}`,
+      description: `Your ${selectedService} appointment is scheduled for ${selectedDate} at ${selectedTime}`,
     });
   };
 
@@ -60,6 +61,30 @@ const Index = () => {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
+            {/* Service Selection */}
+            <div>
+              <label className="block text-gray-200 mb-2">Select Service</label>
+              <select
+                value={selectedService}
+                onChange={(e) => setSelectedService(e.target.value)}
+                className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+              >
+                <option value="">Choose a service</option>
+                <optgroup label="Haircut Services" className="bg-gray-800">
+                  <option value="Haircut" className="bg-gray-800">Haircut ($30)</option>
+                  <option value="Beard Trim" className="bg-gray-800">Beard Trim ($20)</option>
+                  <option value="Hot Shave" className="bg-gray-800">Hot Shave ($25)</option>
+                  <option value="Hair & Beard Combo" className="bg-gray-800">Hair & Beard Combo ($45)</option>
+                </optgroup>
+                <optgroup label="Massage Services" className="bg-gray-800">
+                  <option value="Head Massage" className="bg-gray-800">Head Massage ($25)</option>
+                  <option value="Face Massage" className="bg-gray-800">Face Massage ($20)</option>
+                  <option value="Shoulder & Back" className="bg-gray-800">Shoulder & Back ($35)</option>
+                  <option value="Premium Package" className="bg-gray-800">Premium Package ($60)</option>
+                </optgroup>
+              </select>
+            </div>
+
             {/* Date Selection */}
             <div>
               <label className="block text-gray-200 mb-2">Select Date</label>
@@ -73,7 +98,7 @@ const Index = () => {
             </div>
 
             {/* Time Selection */}
-            <div>
+            <div className="md:col-span-2">
               <label className="block text-gray-200 mb-2">Select Time</label>
               <select
                 value={selectedTime}
