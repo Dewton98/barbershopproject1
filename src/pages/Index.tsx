@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { Clock } from 'lucide-react';
@@ -9,6 +8,8 @@ const Index = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [selectedService, setSelectedService] = useState<string>('');
+  const [customerPhone, setCustomerPhone] = useState<string>('');
+  const [barberPhone, setBarberPhone] = useState<string>('+254700000000');
   const { toast } = useToast();
 
   const availableTimes = [
@@ -17,10 +18,20 @@ const Index = () => {
   ];
 
   const handleBooking = () => {
-    if (!selectedDate || !selectedTime || !selectedService) {
+    if (!selectedDate || !selectedTime || !selectedService || !customerPhone) {
       toast({
         title: "Error",
-        description: "Please select date, time and service type",
+        description: "Please fill in all required fields including your phone number",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const phoneRegex = /^\+254\d{9}$/;
+    if (!phoneRegex.test(customerPhone)) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter a valid Kenyan phone number starting with +254",
         variant: "destructive"
       });
       return;
@@ -28,7 +39,7 @@ const Index = () => {
 
     toast({
       title: "Booking Confirmed",
-      description: `Your ${selectedService} appointment is scheduled for ${selectedDate} at ${selectedTime}`,
+      description: `Your ${selectedService} appointment is scheduled for ${selectedDate} at ${selectedTime}. You will receive an SMS confirmation shortly.`,
     });
   };
 
@@ -37,14 +48,12 @@ const Index = () => {
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
       style={{
         backgroundImage: 'url("/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png")',
-        backgroundColor: '#222222', // Dark fallback color
+        backgroundColor: '#222222',
       }}
     >
-      {/* Semi-transparent overlay */}
       <div className="absolute inset-0 bg-black/50" />
       
       <div className="relative z-10 max-w-4xl mx-auto pt-16 px-4">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Premium Barber Shop
@@ -54,7 +63,6 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Booking Section */}
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
           <h2 className="text-2xl font-semibold text-white mb-6">
             Book Your Appointment
@@ -85,6 +93,18 @@ const Index = () => {
               </select>
             </div>
 
+            {/* Phone Number Input */}
+            <div>
+              <label className="block text-gray-200 mb-2">Phone Number</label>
+              <input
+                type="tel"
+                placeholder="+254700000000"
+                value={customerPhone}
+                onChange={(e) => setCustomerPhone(e.target.value)}
+                className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+              />
+            </div>
+
             {/* Date Selection */}
             <div>
               <label className="block text-gray-200 mb-2">Select Date</label>
@@ -98,7 +118,7 @@ const Index = () => {
             </div>
 
             {/* Time Selection */}
-            <div className="md:col-span-2">
+            <div>
               <label className="block text-gray-200 mb-2">Select Time</label>
               <select
                 value={selectedTime}
@@ -124,7 +144,6 @@ const Index = () => {
           </button>
         </div>
 
-        {/* Haircut Services Section */}
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
           <h2 className="text-2xl font-semibold text-white mb-6">
             Haircut Services
@@ -153,7 +172,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Massage Services Section */}
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
           <h2 className="text-2xl font-semibold text-white mb-6">
             Massage Services
@@ -187,7 +205,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm border-t border-white/10">
         <div className="max-w-md mx-auto flex justify-around">
           <button
