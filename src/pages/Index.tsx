@@ -71,16 +71,16 @@ const Index = () => {
               >
                 <option value="">Choose a service</option>
                 <optgroup label="Haircut Services" className="bg-gray-800">
-                  <option value="Haircut" className="bg-gray-800">Haircut ($30)</option>
-                  <option value="Beard Trim" className="bg-gray-800">Beard Trim ($20)</option>
-                  <option value="Hot Shave" className="bg-gray-800">Hot Shave ($25)</option>
-                  <option value="Hair & Beard Combo" className="bg-gray-800">Hair & Beard Combo ($45)</option>
+                  <option value="Haircut" className="bg-gray-800">Haircut (KES 3,900)</option>
+                  <option value="Beard Trim" className="bg-gray-800">Beard Trim (KES 2,600)</option>
+                  <option value="Hot Shave" className="bg-gray-800">Hot Shave (KES 3,250)</option>
+                  <option value="Hair & Beard Combo" className="bg-gray-800">Hair & Beard Combo (KES 5,850)</option>
                 </optgroup>
                 <optgroup label="Massage Services" className="bg-gray-800">
-                  <option value="Head Massage" className="bg-gray-800">Head Massage ($25)</option>
-                  <option value="Face Massage" className="bg-gray-800">Face Massage ($20)</option>
-                  <option value="Shoulder & Back" className="bg-gray-800">Shoulder & Back ($35)</option>
-                  <option value="Premium Package" className="bg-gray-800">Premium Package ($60)</option>
+                  <option value="Head Massage" className="bg-gray-800">Head Massage (KES 3,250)</option>
+                  <option value="Face Massage" className="bg-gray-800">Face Massage (KES 2,600)</option>
+                  <option value="Shoulder & Back" className="bg-gray-800">Shoulder & Back (KES 4,550)</option>
+                  <option value="Premium Package" className="bg-gray-800">Premium Package (KES 7,800)</option>
                 </optgroup>
               </select>
             </div>
@@ -133,22 +133,22 @@ const Index = () => {
             <div className="text-gray-200">
               <h3 className="text-xl font-semibold mb-2">Haircut</h3>
               <p className="mb-1">Professional cut and style</p>
-              <p className="text-callGreen">$30</p>
+              <p className="text-callGreen">KES 3,900</p>
             </div>
             <div className="text-gray-200">
               <h3 className="text-xl font-semibold mb-2">Beard Trim</h3>
               <p className="mb-1">Shape and style your beard</p>
-              <p className="text-callGreen">$20</p>
+              <p className="text-callGreen">KES 2,600</p>
             </div>
             <div className="text-gray-200">
               <h3 className="text-xl font-semibold mb-2">Hot Shave</h3>
               <p className="mb-1">Traditional hot towel shave</p>
-              <p className="text-callGreen">$25</p>
+              <p className="text-callGreen">KES 3,250</p>
             </div>
             <div className="text-gray-200">
               <h3 className="text-xl font-semibold mb-2">Hair & Beard Combo</h3>
               <p className="mb-1">Complete grooming package</p>
-              <p className="text-callGreen">$45</p>
+              <p className="text-callGreen">KES 5,850</p>
             </div>
           </div>
         </div>
@@ -163,25 +163,25 @@ const Index = () => {
               <h3 className="text-xl font-semibold mb-2">Head Massage</h3>
               <p className="mb-1">Relaxing scalp and neck massage</p>
               <p className="mb-2 text-sm text-gray-300">Duration: 20 minutes</p>
-              <p className="text-callGreen">$25</p>
+              <p className="text-callGreen">KES 3,250</p>
             </div>
             <div className="text-gray-200">
               <h3 className="text-xl font-semibold mb-2">Face Massage</h3>
               <p className="mb-1">Rejuvenating facial massage</p>
               <p className="mb-2 text-sm text-gray-300">Duration: 15 minutes</p>
-              <p className="text-callGreen">$20</p>
+              <p className="text-callGreen">KES 2,600</p>
             </div>
             <div className="text-gray-200">
               <h3 className="text-xl font-semibold mb-2">Shoulder & Back</h3>
               <p className="mb-1">Stress-relieving upper body massage</p>
               <p className="mb-2 text-sm text-gray-300">Duration: 30 minutes</p>
-              <p className="text-callGreen">$35</p>
+              <p className="text-callGreen">KES 4,550</p>
             </div>
             <div className="text-gray-200">
               <h3 className="text-xl font-semibold mb-2">Premium Package</h3>
               <p className="mb-1">Complete relaxation treatment</p>
               <p className="mb-2 text-sm text-gray-300">Duration: 45 minutes</p>
-              <p className="text-callGreen">$60</p>
+              <p className="text-callGreen">KES 7,800</p>
             </div>
           </div>
         </div>
