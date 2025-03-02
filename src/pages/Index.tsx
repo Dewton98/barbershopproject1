@@ -148,6 +148,25 @@ const Index = () => {
   console.log('Current active tab:', activeTab);
   console.log('Current bookings:', bookings);
 
+  // Gallery images
+  const galleryImages = [
+    {
+      src: "/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png",
+      alt: "Barber shop interior",
+      caption: "Premium Barber Experience"
+    },
+    {
+      src: "/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png",
+      alt: "Haircut service",
+      caption: "Professional Haircut"
+    },
+    {
+      src: "/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png",
+      alt: "Beard trim service",
+      caption: "Precision Beard Trimming"
+    }
+  ];
+
   return (
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
@@ -320,6 +339,30 @@ const Index = () => {
                   <p className="mb-2 text-sm text-gray-300">Duration: 45 minutes</p>
                   <p className="text-callGreen">KES 7,800</p>
                 </div>
+              </div>
+            </div>
+            
+            {/* Gallery Section */}
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8">
+              <h2 className="text-2xl font-semibold text-white mb-6">
+                Our Gallery
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {galleryImages.map((image, index) => (
+                  <div 
+                    key={index} 
+                    className="relative overflow-hidden rounded-lg group"
+                  >
+                    <img 
+                      src={image.src} 
+                      alt={image.alt}
+                      className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                      <p className="text-white p-4 font-medium">{image.caption}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </>
