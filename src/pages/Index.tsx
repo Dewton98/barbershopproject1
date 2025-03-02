@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, History } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -87,6 +88,45 @@ const Index = () => {
     setSelectedDate('');
     setSelectedTime('');
     setSelectedService('');
+  };
+
+  // Test function to add sample bookings (for debugging)
+  const addSampleBookings = () => {
+    const sampleBookings: Booking[] = [
+      {
+        id: '1',
+        service: 'Haircut',
+        date: '2023-06-10',
+        time: '10:00',
+        status: 'completed',
+        price: 'KES 3,900'
+      },
+      {
+        id: '2',
+        service: 'Beard Trim',
+        date: '2023-06-15',
+        time: '14:00',
+        status: 'cancelled',
+        price: 'KES 2,600'
+      },
+      {
+        id: '3',
+        service: 'Hot Shave',
+        date: '2023-07-20',
+        time: '11:00',
+        status: 'upcoming',
+        price: 'KES 3,250'
+      }
+    ];
+    
+    const updatedBookings = [...sampleBookings, ...bookings];
+    setBookings(updatedBookings);
+    localStorage.setItem('barberBookings', JSON.stringify(updatedBookings));
+    
+    toast({
+      title: "Sample Bookings Added",
+      description: "Sample bookings have been added to your history for testing."
+    });
   };
 
   return (
@@ -190,6 +230,16 @@ const Index = () => {
               >
                 Book Appointment
               </button>
+              
+              {/* Debug button - visible only in development */}
+              {process.env.NODE_ENV !== 'production' && (
+                <button
+                  onClick={addSampleBookings}
+                  className="mt-4 w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
+                >
+                  Add Sample Bookings (For Testing)
+                </button>
+              )}
             </div>
 
             {/* Haircut Services */}

@@ -18,7 +18,10 @@ interface BookingHistoryProps {
 }
 
 const BookingHistory = ({ bookings }: BookingHistoryProps) => {
-  if (bookings.length === 0) {
+  // Debug check - Ensure bookings are being passed correctly
+  console.log('BookingHistory received bookings:', bookings);
+  
+  if (!bookings || bookings.length === 0) {
     return (
       <div className="text-center py-12">
         <History className="w-12 h-12 mx-auto text-gray-400 mb-4" />
