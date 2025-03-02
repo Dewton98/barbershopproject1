@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, History } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -21,9 +20,20 @@ const Index = () => {
 
   // Load bookings from localStorage on component mount
   useEffect(() => {
+    console.log('Loading bookings from localStorage');
     const savedBookings = localStorage.getItem('barberBookings');
     if (savedBookings) {
-      setBookings(JSON.parse(savedBookings));
+      try {
+        const parsedBookings = JSON.parse(savedBookings);
+        console.log('Parsed bookings:', parsedBookings);
+        setBookings(parsedBookings);
+      } catch (error) {
+        console.error('Error parsing bookings from localStorage:', error);
+        // If there's an error, initialize with empty array
+        setBookings([]);
+      }
+    } else {
+      console.log('No bookings found in localStorage');
     }
   }, []);
 
@@ -128,6 +138,15 @@ const Index = () => {
       description: "Sample bookings have been added to your history for testing."
     });
   };
+
+  // Toggle between tabs function
+  const handleTabChange = (tab: 'booking' | 'history') => {
+    console.log('Changing tab to:', tab);
+    setActiveTab(tab);
+  };
+
+  console.log('Current active tab:', activeTab);
+  console.log('Current bookings:', bookings);
 
   return (
     <div 
@@ -314,7 +333,7 @@ const Index = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm border-t border-white/10">
         <div className="max-w-md mx-auto flex justify-around">
           <button
-            onClick={() => setActiveTab('booking')}
+            onClick={() => handleTabChange('booking')}
             className={`flex flex-col items-center py-4 px-6 transition-colors duration-200 ${
               activeTab === 'booking'
                 ? 'text-callGreen'
@@ -325,7 +344,7 @@ const Index = () => {
             <span className="text-sm mt-1">Book</span>
           </button>
           <button
-            onClick={() => setActiveTab('history')}
+            onClick={() => handleTabChange('history')}
             className={`flex flex-col items-center py-4 px-6 transition-colors duration-200 ${
               activeTab === 'history'
                 ? 'text-callGreen'
