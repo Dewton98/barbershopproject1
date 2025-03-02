@@ -18,7 +18,6 @@ const Index = () => {
     '14:00', '15:00', '16:00', '17:00'
   ];
 
-  // Load bookings from localStorage on component mount
   useEffect(() => {
     console.log('Loading bookings from localStorage');
     const savedBookings = localStorage.getItem('barberBookings');
@@ -29,7 +28,6 @@ const Index = () => {
         setBookings(parsedBookings);
       } catch (error) {
         console.error('Error parsing bookings from localStorage:', error);
-        // If there's an error, initialize with empty array
         setBookings([]);
       }
     } else {
@@ -37,7 +35,6 @@ const Index = () => {
     }
   }, []);
 
-  // Extract price from service selection
   const getServicePrice = (service: string): string => {
     const priceMap: Record<string, string> = {
       'Haircut': 'KES 3,900',
@@ -72,7 +69,6 @@ const Index = () => {
       return;
     }
 
-    // Create a new booking
     const newBooking: Booking = {
       id: Date.now().toString(),
       service: selectedService,
@@ -82,11 +78,9 @@ const Index = () => {
       price: getServicePrice(selectedService)
     };
 
-    // Add to bookings array
     const updatedBookings = [newBooking, ...bookings];
     setBookings(updatedBookings);
     
-    // Save to localStorage
     localStorage.setItem('barberBookings', JSON.stringify(updatedBookings));
 
     toast({
@@ -94,13 +88,11 @@ const Index = () => {
       description: `Your ${selectedService} appointment is scheduled for ${selectedDate} at ${selectedTime}. You will receive an SMS confirmation shortly.`,
     });
 
-    // Reset form
     setSelectedDate('');
     setSelectedTime('');
     setSelectedService('');
   };
 
-  // Test function to add sample bookings (for debugging)
   const addSampleBookings = () => {
     const sampleBookings: Booking[] = [
       {
@@ -139,31 +131,31 @@ const Index = () => {
     });
   };
 
-  // Toggle between tabs function
   const handleTabChange = (tab: 'booking' | 'history') => {
     console.log('Changing tab to:', tab);
     setActiveTab(tab);
   };
 
-  console.log('Current active tab:', activeTab);
-  console.log('Current bookings:', bookings);
-
-  // Gallery images
   const galleryImages = [
     {
-      src: "/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png",
-      alt: "Barber shop interior",
-      caption: "Premium Barber Experience"
+      src: "/lovable-uploads/1d67ea84-a863-483f-9e89-b6c7fd2ce380.png",
+      alt: "Textured hairstyle with designs",
+      caption: "Premium Textured Designs"
     },
     {
-      src: "/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png",
-      alt: "Haircut service",
-      caption: "Professional Haircut"
+      src: "/lovable-uploads/d31dd35d-6e7c-4c2b-8fe9-4b9e2b26d4c4.png",
+      alt: "Clean fade haircut",
+      caption: "Professional Clean Fade"
     },
     {
-      src: "/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png",
-      alt: "Beard trim service",
-      caption: "Precision Beard Trimming"
+      src: "/lovable-uploads/a1f1666e-6805-4b83-9476-db4cd9a9079d.png",
+      alt: "Designer haircut with patterns",
+      caption: "Custom Design Patterns"
+    },
+    {
+      src: "/lovable-uploads/767ead22-789b-4626-8449-5ae430612cc3.png",
+      alt: "Creative wave designs",
+      caption: "Precision Wave Styling"
     }
   ];
 
@@ -195,7 +187,6 @@ const Index = () => {
               </h2>
 
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Service Selection */}
                 <div>
                   <label className="block text-gray-200 mb-2">Select Service</label>
                   <select
@@ -219,7 +210,6 @@ const Index = () => {
                   </select>
                 </div>
 
-                {/* Phone Number Input */}
                 <div>
                   <label className="block text-gray-200 mb-2">Phone Number</label>
                   <input
@@ -231,7 +221,6 @@ const Index = () => {
                   />
                 </div>
 
-                {/* Date Selection */}
                 <div>
                   <label className="block text-gray-200 mb-2">Select Date</label>
                   <input
@@ -243,7 +232,6 @@ const Index = () => {
                   />
                 </div>
 
-                {/* Time Selection */}
                 <div>
                   <label className="block text-gray-200 mb-2">Select Time</label>
                   <select
@@ -261,7 +249,6 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Book Button */}
               <button
                 onClick={handleBooking}
                 className="mt-8 w-full bg-callGreen hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
@@ -269,7 +256,6 @@ const Index = () => {
                 Book Appointment
               </button>
               
-              {/* Debug button - visible only in development */}
               {process.env.NODE_ENV !== 'production' && (
                 <button
                   onClick={addSampleBookings}
@@ -280,7 +266,6 @@ const Index = () => {
               )}
             </div>
 
-            {/* Haircut Services */}
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
               <h2 className="text-2xl font-semibold text-white mb-6">
                 Haircut Services
@@ -309,7 +294,6 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Massage Services */}
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
               <h2 className="text-2xl font-semibold text-white mb-6">
                 Massage Services
@@ -341,13 +325,12 @@ const Index = () => {
                 </div>
               </div>
             </div>
-            
-            {/* Gallery Section */}
+
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8">
               <h2 className="text-2xl font-semibold text-white mb-6">
                 Our Gallery
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 {galleryImages.map((image, index) => (
                   <div 
                     key={index} 
