@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, History } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -163,11 +164,11 @@ const Index = () => {
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
       style={{
-        backgroundImage: 'url("/lovable-uploads/e23deada-876e-458a-8252-6f77beedbeb1.png")',
+        backgroundImage: 'url("/lovable-uploads/b7424266-22b6-4251-9809-ce00012794f6.png")',
         backgroundColor: '#222222',
       }}
     >
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-black/70" /> {/* Darker overlay for better readability */}
       
       <div className="relative z-10 max-w-4xl mx-auto pt-16 px-4 pb-24">
         <div className="text-center mb-12">
