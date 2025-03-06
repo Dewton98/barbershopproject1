@@ -164,11 +164,11 @@ const Index = () => {
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
       style={{
-        backgroundImage: 'url("/lovable-uploads/b7424266-22b6-4251-9809-ce00012794f6.png")',
-        backgroundColor: '#222222',
+        backgroundImage: 'url("/lovable-uploads/307d6cc2-7249-4075-95a2-c1ce6c09f4ea.png")',
+        backgroundColor: '#9ED0BD', // Soft mint green background that matches the image
       }}
     >
-      <div className="absolute inset-0 bg-black/70" /> {/* Darker overlay for better readability */}
+      <div className="absolute inset-0 bg-black/40" /> {/* Lighter overlay for the pastel background */}
       
       <div className="relative z-10 max-w-4xl mx-auto pt-16 px-4 pb-24">
         <div className="text-center mb-12">
