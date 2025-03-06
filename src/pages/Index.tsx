@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, History } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -182,89 +181,100 @@ const Index = () => {
 
         {activeTab === 'booking' ? (
           <>
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
-              <h2 className="text-2xl font-semibold text-white mb-6">
-                Book Your Appointment
-              </h2>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-gray-200 mb-2">Select Service</label>
-                  <select
-                    value={selectedService}
-                    onChange={(e) => setSelectedService(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  >
-                    <option value="">Choose a service</option>
-                    <optgroup label="Haircut Services" className="bg-gray-800">
-                      <option value="Haircut" className="bg-gray-800">Haircut (KES 3,900)</option>
-                      <option value="Beard Trim" className="bg-gray-800">Beard Trim (KES 2,600)</option>
-                      <option value="Hot Shave" className="bg-gray-800">Hot Shave (KES 3,250)</option>
-                      <option value="Hair & Beard Combo" className="bg-gray-800">Hair & Beard Combo (KES 5,850)</option>
-                    </optgroup>
-                    <optgroup label="Massage Services" className="bg-gray-800">
-                      <option value="Head Massage" className="bg-gray-800">Head Massage (KES 3,250)</option>
-                      <option value="Face Massage" className="bg-gray-800">Face Massage (KES 2,600)</option>
-                      <option value="Shoulder & Back" className="bg-gray-800">Shoulder & Back (KES 4,550)</option>
-                      <option value="Premium Package" className="bg-gray-800">Premium Package (KES 7,800)</option>
-                    </optgroup>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-gray-200 mb-2">Phone Number</label>
-                  <input
-                    type="tel"
-                    placeholder="+254700000000"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-200 mb-2">Select Date</label>
-                  <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-200 mb-2">Select Time</label>
-                  <select
-                    value={selectedTime}
-                    onChange={(e) => setSelectedTime(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  >
-                    <option value="">Choose a time</option>
-                    {availableTimes.map((time) => (
-                      <option key={time} value={time} className="bg-gray-800">
-                        {time}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <button
-                onClick={handleBooking}
-                className="mt-8 w-full bg-callGreen hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
-              >
-                Book Appointment
-              </button>
+            <div 
+              className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8 relative overflow-hidden"
+              style={{
+                backgroundImage: 'url("/lovable-uploads/78b605b9-95cc-4e39-844c-c215f312d7e7.png")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            >
+              <div className="absolute inset-0 bg-navy/90 backdrop-blur-sm"></div>
               
-              {process.env.NODE_ENV !== 'production' && (
+              <div className="relative z-10">
+                <h2 className="text-2xl font-semibold text-white mb-6">
+                  Book Your Appointment
+                </h2>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-gray-200 mb-2">Select Service</label>
+                    <select
+                      value={selectedService}
+                      onChange={(e) => setSelectedService(e.target.value)}
+                      className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    >
+                      <option value="">Choose a service</option>
+                      <optgroup label="Haircut Services" className="bg-gray-800">
+                        <option value="Haircut" className="bg-gray-800">Haircut (KES 3,900)</option>
+                        <option value="Beard Trim" className="bg-gray-800">Beard Trim (KES 2,600)</option>
+                        <option value="Hot Shave" className="bg-gray-800">Hot Shave (KES 3,250)</option>
+                        <option value="Hair & Beard Combo" className="bg-gray-800">Hair & Beard Combo (KES 5,850)</option>
+                      </optgroup>
+                      <optgroup label="Massage Services" className="bg-gray-800">
+                        <option value="Head Massage" className="bg-gray-800">Head Massage (KES 3,250)</option>
+                        <option value="Face Massage" className="bg-gray-800">Face Massage (KES 2,600)</option>
+                        <option value="Shoulder & Back" className="bg-gray-800">Shoulder & Back (KES 4,550)</option>
+                        <option value="Premium Package" className="bg-gray-800">Premium Package (KES 7,800)</option>
+                      </optgroup>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-200 mb-2">Phone Number</label>
+                    <input
+                      type="tel"
+                      placeholder="+254700000000"
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-200 mb-2">Select Date</label>
+                    <input
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-200 mb-2">Select Time</label>
+                    <select
+                      value={selectedTime}
+                      onChange={(e) => setSelectedTime(e.target.value)}
+                      className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    >
+                      <option value="">Choose a time</option>
+                      {availableTimes.map((time) => (
+                        <option key={time} value={time} className="bg-gray-800">
+                          {time}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
                 <button
-                  onClick={addSampleBookings}
-                  className="mt-4 w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
+                  onClick={handleBooking}
+                  className="mt-8 w-full bg-callGreen hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
                 >
-                  Add Sample Bookings (For Testing)
+                  Book Appointment
                 </button>
-              )}
+                
+                {process.env.NODE_ENV !== 'production' && (
+                  <button
+                    onClick={addSampleBookings}
+                    className="mt-4 w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
+                  >
+                    Add Sample Bookings (For Testing)
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
