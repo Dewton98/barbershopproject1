@@ -13,7 +13,7 @@ interface GallerySectionProps {
 
 const GallerySection: React.FC<GallerySectionProps> = ({ galleryImages }) => {
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8">
+    <div className="bg-black/20 backdrop-blur-md rounded-xl p-6 md:p-8">
       <h2 className="text-2xl font-semibold text-white mb-6">
         Our Gallery
       </h2>

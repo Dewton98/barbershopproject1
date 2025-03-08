@@ -11,7 +11,7 @@ const HaircutServiceSection: React.FC = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div className="absolute inset-0 bg-navy/70 backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
       
       <div className="relative z-10">
         <h2 className="text-2xl font-semibold text-white mb-6">
