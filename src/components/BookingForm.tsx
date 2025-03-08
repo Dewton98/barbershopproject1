@@ -82,76 +82,88 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
-      <h2 className="text-2xl font-semibold text-white mb-6">Book an Appointment</h2>
-      <div className="grid gap-6 md:grid-cols-2">
-        <div>
-          <label className="block text-white mb-2">Service</label>
-          <select 
-            value={selectedService}
-            onChange={(e) => setSelectedService(e.target.value)}
-            className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
-            required
-          >
-            <option value="">Select a service</option>
-            <option value="Haircut">Haircut - KES 3,900</option>
-            <option value="Beard Trim">Beard Trim - KES 2,600</option>
-            <option value="Hot Shave">Hot Shave - KES 3,250</option>
-            <option value="Hair & Beard Combo">Hair & Beard Combo - KES 5,850</option>
-            <option value="Head Massage">Head Massage - KES 3,250</option>
-            <option value="Face Massage">Face Massage - KES 2,600</option>
-            <option value="Shoulder & Back">Shoulder & Back - KES 4,550</option>
-            <option value="Premium Package">Premium Package - KES 7,800</option>
-          </select>
+    <div 
+      className="relative rounded-xl p-6 md:p-8 mb-8 overflow-hidden"
+      style={{
+        backgroundImage: 'url("/lovable-uploads/dc5a0720-ed8b-4ba9-af5e-add5ab3a26ff.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* Dark overlay to improve text readability */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      
+      <div className="relative z-10">
+        <h2 className="text-2xl font-semibold text-white mb-6">Book an Appointment</h2>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <label className="block text-white mb-2">Service</label>
+            <select 
+              value={selectedService}
+              onChange={(e) => setSelectedService(e.target.value)}
+              className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
+              required
+            >
+              <option value="">Select a service</option>
+              <option value="Haircut">Haircut - KES 3,900</option>
+              <option value="Beard Trim">Beard Trim - KES 2,600</option>
+              <option value="Hot Shave">Hot Shave - KES 3,250</option>
+              <option value="Hair & Beard Combo">Hair & Beard Combo - KES 5,850</option>
+              <option value="Head Massage">Head Massage - KES 3,250</option>
+              <option value="Face Massage">Face Massage - KES 2,600</option>
+              <option value="Shoulder & Back">Shoulder & Back - KES 4,550</option>
+              <option value="Premium Package">Premium Package - KES 7,800</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-white mb-2">Date</label>
+            <input 
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
+              min={new Date().toISOString().split('T')[0]}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-white mb-2">Time</label>
+            <select 
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+              className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
+              required
+            >
+              <option value="">Select a time</option>
+              {availableTimes.map((time) => (
+                <option key={time} value={time}>{time}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-white mb-2">Your Phone Number</label>
+            <input 
+              type="tel"
+              value={customerPhone}
+              onChange={(e) => setCustomerPhone(e.target.value)}
+              placeholder="+254XXXXXXXXX"
+              className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
+              required
+            />
+            <p className="text-gray-300 text-xs mt-1">Format: +254XXXXXXXXX</p>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-white mb-2">Date</label>
-          <input 
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
-            min={new Date().toISOString().split('T')[0]}
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-white mb-2">Time</label>
-          <select 
-            value={selectedTime}
-            onChange={(e) => setSelectedTime(e.target.value)}
-            className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
-            required
-          >
-            <option value="">Select a time</option>
-            {availableTimes.map((time) => (
-              <option key={time} value={time}>{time}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-white mb-2">Your Phone Number</label>
-          <input 
-            type="tel"
-            value={customerPhone}
-            onChange={(e) => setCustomerPhone(e.target.value)}
-            placeholder="+254XXXXXXXXX"
-            className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
-            required
-          />
-          <p className="text-gray-300 text-xs mt-1">Format: +254XXXXXXXXX</p>
-        </div>
+        <button 
+          onClick={handleBooking}
+          className="mt-6 bg-callGreen hover:bg-callGreen/80 text-white font-medium py-2 px-6 rounded-md transition-colors"
+        >
+          Book Appointment
+        </button>
       </div>
-
-      <button 
-        onClick={handleBooking}
-        className="mt-6 bg-callGreen hover:bg-callGreen/80 text-white font-medium py-2 px-6 rounded-md transition-colors"
-      >
-        Book Appointment
-      </button>
     </div>
   );
 };
