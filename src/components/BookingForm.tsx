@@ -85,13 +85,13 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
     <div 
       className="relative rounded-xl p-6 md:p-8 mb-8 overflow-hidden"
       style={{
-        backgroundImage: 'url("/lovable-uploads/dc5a0720-ed8b-4ba9-af5e-add5ab3a26ff.png")',
+        backgroundImage: 'url("/lovable-uploads/eb0b2532-3cdb-4b47-ac25-608cf2696126.png")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
       {/* Dark overlay to improve text readability */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
       
       <div className="relative z-10">
         <h2 className="text-2xl font-semibold text-white mb-6">Book an Appointment</h2>
