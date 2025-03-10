@@ -85,7 +85,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
     <div 
       className="relative rounded-xl p-6 md:p-8 mb-8 overflow-hidden"
       style={{
-        backgroundImage: 'url("/lovable-uploads/eb0b2532-3cdb-4b47-ac25-608cf2696126.png")',
+        backgroundImage: 'url("/lovable-uploads/a50064bb-68d4-455b-a857-9ee029a9a4e2.png")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
