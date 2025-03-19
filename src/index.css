@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -34,6 +35,11 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    @apply tracking-tight;
   }
 
   /* Custom scrollbar */
@@ -86,4 +92,22 @@ button {
 .fade-exit-active {
   opacity: 0;
   transition: opacity 200ms ease-out;
+}
+
+/* Card hover effects */
+.service-card {
+  @apply transition-all duration-300 relative overflow-hidden;
+}
+
+.service-card:hover {
+  @apply translate-y-[-5px] shadow-lg;
+}
+
+.service-card::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-0 h-[3px] bg-callGreen transition-all duration-300;
+}
+
+.service-card:hover::after {
+  @apply w-full;
 }

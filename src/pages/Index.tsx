@@ -132,7 +132,7 @@ const Index = () => {
       
       <div className="relative z-10 max-w-4xl mx-auto pt-16 px-4 pb-24">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
             Premium Barber Shop
           </h1>
           <p className="text-xl text-gray-200">
