@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
@@ -70,11 +69,6 @@ const Index = () => {
     setBookings(updatedBookings);
     
     localStorage.setItem('barberBookings', JSON.stringify(updatedBookings));
-
-    toast({
-      title: "Booking Confirmed",
-      description: `Your ${newBooking.service} appointment is scheduled for ${newBooking.date} at ${newBooking.time}. You will receive an SMS confirmation shortly.`,
-    });
   };
 
   const addSampleBookings = () => {
@@ -108,11 +102,6 @@ const Index = () => {
     const updatedBookings = [...sampleBookings, ...bookings];
     setBookings(updatedBookings);
     localStorage.setItem('barberBookings', JSON.stringify(updatedBookings));
-    
-    toast({
-      title: "Sample Bookings Added",
-      description: "Sample bookings have been added to your history for testing."
-    });
   };
 
   const handleTabChange = (tab: 'booking' | 'history') => {
@@ -132,7 +121,7 @@ const Index = () => {
       
       <div className="relative z-10 max-w-4xl mx-auto pt-16 px-4 pb-24">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-white mb-4 leading-tight">
             Premium Barber Shop
           </h1>
           <p className="text-xl text-gray-200">
