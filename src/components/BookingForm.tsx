@@ -55,11 +55,20 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       return;
     }
 
-    const phoneRegex = /^\+254\d{9}$/;
+    // Format phone number if needed (convert local format to international)
+    let formattedPhone = customerPhone;
+    
+    // If phone starts with 0, replace with +254
+    if (customerPhone.startsWith('0') && customerPhone.length === 10) {
+      formattedPhone = '+254' + customerPhone.substring(1);
+    }
+    
+    // Check if phone number is valid (either +254XXXXXXXXX or 07XXXXXXXX format)
+    const phoneRegex = /^(\+254\d{9}|0\d{9})$/;
     if (!phoneRegex.test(customerPhone)) {
       toast({
         title: "Invalid Phone Number",
-        description: "Please enter a valid Kenyan phone number starting with +254",
+        description: "Please enter a valid Kenyan phone number (07XXXXXXXX or +254XXXXXXXX)",
         variant: "destructive"
       });
       return;
@@ -69,7 +78,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       service: selectedService,
       date: selectedDate,
       time: selectedTime,
-      price: getServicePrice(selectedService)
+      price: getServicePrice(selectedService),
+      customerPhone: formattedPhone // Store the formatted number
     };
 
     onBookingSubmit(newBooking);
@@ -96,6 +106,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       <div className="relative z-10">
         <h2 className="text-2xl font-semibold text-white mb-6">Book an Appointment</h2>
         <div className="grid gap-6 md:grid-cols-2">
+          {/* Service selector */}
           <div>
             <label className="block text-white mb-2">Service</label>
             <select 
@@ -116,6 +127,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
             </select>
           </div>
 
+          {/* Date selector */}
           <div>
             <label className="block text-white mb-2">Date</label>
             <input 
@@ -128,6 +140,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
             />
           </div>
 
+          {/* Time selector */}
           <div>
             <label className="block text-white mb-2">Time</label>
             <select 
@@ -143,17 +156,18 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
             </select>
           </div>
 
+          {/* Phone number input */}
           <div>
             <label className="block text-white mb-2">Your Phone Number</label>
             <input 
               type="tel"
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
-              placeholder="+254XXXXXXXXX"
+              placeholder="07XXXXXXXX or +254XXXXXXXX"
               className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
               required
             />
-            <p className="text-gray-300 text-xs mt-1">Format: +254XXXXXXXXX</p>
+            <p className="text-gray-300 text-xs mt-1">Format: 07XXXXXXXX or +254XXXXXXXX</p>
           </div>
         </div>
 
