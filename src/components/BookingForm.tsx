@@ -1,14 +1,15 @@
+
 import React, { useState } from 'react';
+import { Clock, Calendar, Scissors } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import BookingConfirmation from './BookingConfirmation';
-import { Booking } from '@/components/BookingHistory';
+import type { Booking as BookingType } from "@/components/BookingHistory";
 
 interface BookingFormProps {
   availableTimes: string[];
-  onBookingSubmit: (newBooking: Omit<Booking, 'id' | 'status'>) => void;
+  onBookingSubmit: (booking: Omit<BookingType, 'id' | 'status'>) => void;
 }
 
-export interface BookingFormData {
+interface FormData {
   service: string;
   date: string;
   time: string;

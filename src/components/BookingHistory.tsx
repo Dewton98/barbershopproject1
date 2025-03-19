@@ -27,17 +27,15 @@ const BookingHistory = ({ bookings }: BookingHistoryProps) => {
     <div 
       className="relative rounded-xl p-6 md:p-8 mb-8 overflow-hidden"
       style={{
-        backgroundImage: 'url("/lovable-uploads/eb0b2532-3cdb-4b47-ac25-608cf2696126.png")',
+        backgroundImage: 'url("/lovable-uploads/7c84a44f-eadc-4c9b-bf7e-2e70ae53df3e.png")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        transform: 'rotate(90deg)',
-        transformOrigin: 'center center'
       }}
     >
       {/* Dark overlay to improve text readability */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
       
-      <div className="relative z-10" style={{ transform: 'rotate(-90deg)' }}>
+      <div className="relative z-10">
         <h2 className="text-2xl font-semibold text-white mb-4">Your Booking History</h2>
         
         {(!bookings || bookings.length === 0) ? (
