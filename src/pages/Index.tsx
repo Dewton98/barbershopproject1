@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
@@ -69,6 +70,14 @@ const Index = () => {
     setBookings(updatedBookings);
     
     localStorage.setItem('barberBookings', JSON.stringify(updatedBookings));
+    
+    // Show a toast when reminder is set
+    if (newBooking.reminder) {
+      toast({
+        title: "Reminder Set",
+        description: `You'll receive a reminder 1 hour before your appointment on ${newBooking.date} at ${newBooking.time}`,
+      });
+    }
   };
 
   const addSampleBookings = () => {
@@ -80,7 +89,8 @@ const Index = () => {
         time: '10:00',
         status: 'completed',
         price: 'KES 3,900',
-        customerPhone: '+254700000000'
+        customerPhone: '+254700000000',
+        reminder: true
       },
       {
         id: '2',
@@ -89,7 +99,8 @@ const Index = () => {
         time: '14:00',
         status: 'cancelled',
         price: 'KES 2,600',
-        customerPhone: '+254700000000'
+        customerPhone: '+254700000000',
+        reminder: false
       },
       {
         id: '3',
@@ -98,7 +109,8 @@ const Index = () => {
         time: '11:00',
         status: 'upcoming',
         price: 'KES 3,250',
-        customerPhone: '+254700000000'
+        customerPhone: '+254700000000',
+        reminder: true
       }
     ];
     

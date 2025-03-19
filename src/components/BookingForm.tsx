@@ -14,6 +14,7 @@ export interface BookingFormData {
   time: string;
   price: string;
   customerPhone: string;
+  reminder: boolean;
 }
 
 export interface Booking {
@@ -30,6 +31,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [selectedService, setSelectedService] = useState<string>('');
   const [customerPhone, setCustomerPhone] = useState<string>('');
+  const [reminder, setReminder] = useState<boolean>(true);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [currentBooking, setCurrentBooking] = useState<Omit<Booking, 'id' | 'status'> | null>(null);
   const { toast } = useToast();
@@ -79,7 +81,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       date: selectedDate,
       time: selectedTime,
       price: getServicePrice(selectedService),
-      customerPhone: formattedPhone
+      customerPhone: formattedPhone,
+      reminder: reminder
     };
 
     setCurrentBooking(newBooking);
@@ -171,6 +174,19 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
                 required
               />
               <p className="text-gray-300 text-xs mt-1">Format: 07XXXXXXXX or +254XXXXXXXX</p>
+            </div>
+
+            <div className="flex items-center col-span-2">
+              <input
+                type="checkbox"
+                id="reminder"
+                checked={reminder}
+                onChange={(e) => setReminder(e.target.checked)}
+                className="h-4 w-4 text-callGreen border-white/20 rounded focus:ring-callGreen bg-white/20"
+              />
+              <label htmlFor="reminder" className="ml-2 block text-white">
+                Send me a reminder 1 hour before my appointment
+              </label>
             </div>
           </div>
 

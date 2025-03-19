@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { History, Calendar, Clock, Scissors } from 'lucide-react';
+import { History, Calendar, Clock, Scissors, Bell, BellOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Define the booking type
@@ -11,6 +12,7 @@ export interface Booking {
   status: 'completed' | 'upcoming' | 'cancelled';
   price: string;
   customerPhone: string;
+  reminder?: boolean;
 }
 
 interface BookingHistoryProps {
@@ -81,6 +83,21 @@ const BookingHistory = ({ bookings }: BookingHistoryProps) => {
                     <Clock className="w-4 h-4 mr-2 text-gray-400" />
                     <span>{booking.time}</span>
                   </div>
+                  {booking.status === 'upcoming' && (
+                    <div className="flex items-center">
+                      {booking.reminder ? (
+                        <>
+                          <Bell className="w-4 h-4 mr-2 text-callGreen" />
+                          <span className="text-callGreen">Reminder set for 1 hour before</span>
+                        </>
+                      ) : (
+                        <>
+                          <BellOff className="w-4 h-4 mr-2 text-gray-400" />
+                          <span>No reminder set</span>
+                        </>
+                      )}
+                    </div>
+                  )}
                   <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/10">
                     <span className="text-gray-400">Price:</span>
                     <span className="text-callGreen font-medium">{booking.price}</span>
