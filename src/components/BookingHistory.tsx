@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { History, Calendar, Clock, Scissors } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -11,6 +10,7 @@ export interface Booking {
   time: string;
   status: 'completed' | 'upcoming' | 'cancelled';
   price: string;
+  customerPhone: string;
 }
 
 interface BookingHistoryProps {

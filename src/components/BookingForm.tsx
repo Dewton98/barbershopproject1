@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingConfirmation from './BookingConfirmation';
+import { Booking } from '@/components/BookingHistory';
 
 interface BookingFormProps {
   availableTimes: string[];
@@ -58,15 +58,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       return;
     }
 
-    // Format phone number if needed (convert local format to international)
     let formattedPhone = customerPhone;
     
-    // If phone starts with 0, replace with +254
     if (customerPhone.startsWith('0') && customerPhone.length === 10) {
       formattedPhone = '+254' + customerPhone.substring(1);
     }
     
-    // Check if phone number is valid (either +254XXXXXXXXX or 07XXXXXXXX format)
     const phoneRegex = /^(\+254\d{9}|0\d{9})$/;
     if (!phoneRegex.test(customerPhone)) {
       toast({
@@ -82,27 +79,23 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       date: selectedDate,
       time: selectedTime,
       price: getServicePrice(selectedService),
-      customerPhone: formattedPhone // Store the formatted number
+      customerPhone: formattedPhone
     };
 
-    // Store the current booking for confirmation screen
     setCurrentBooking(newBooking);
     
-    // Show confirmation screen instead of immediately resetting form
     setShowConfirmation(true);
     
-    // Submit the booking
     onBookingSubmit(newBooking);
   };
 
   const handleConfirmationClose = () => {
     setShowConfirmation(false);
     
-    // Reset form after closing confirmation
     setSelectedDate('');
     setSelectedTime('');
     setSelectedService('');
-    // Don't reset phone number for convenience
+    setCustomerPhone('');
   };
 
   return (
@@ -115,13 +108,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
           backgroundPosition: 'center',
         }}
       >
-        {/* Dark overlay to improve text readability */}
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
         
         <div className="relative z-10">
           <h2 className="text-2xl font-playfair font-semibold text-white mb-6">Book an Appointment</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Service selector */}
             <div>
               <label className="block text-white mb-2">Service</label>
               <select 
@@ -142,7 +133,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
               </select>
             </div>
 
-            {/* Date selector */}
             <div>
               <label className="block text-white mb-2">Date</label>
               <input 
@@ -155,7 +145,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
               />
             </div>
 
-            {/* Time selector */}
             <div>
               <label className="block text-white mb-2">Time</label>
               <select 
@@ -171,7 +160,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
               </select>
             </div>
 
-            {/* Phone number input */}
             <div>
               <label className="block text-white mb-2">Your Phone Number</label>
               <input 
@@ -195,7 +183,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
         </div>
       </div>
 
-      {/* Show confirmation modal when booking is submitted */}
       {showConfirmation && currentBooking && (
         <BookingConfirmation 
           booking={currentBooking} 

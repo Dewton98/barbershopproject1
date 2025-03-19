@@ -79,7 +79,8 @@ const Index = () => {
         date: '2023-06-10',
         time: '10:00',
         status: 'completed',
-        price: 'KES 3,900'
+        price: 'KES 3,900',
+        customerPhone: '+254700000000'
       },
       {
         id: '2',
@@ -87,7 +88,8 @@ const Index = () => {
         date: '2023-06-15',
         time: '14:00',
         status: 'cancelled',
-        price: 'KES 2,600'
+        price: 'KES 2,600',
+        customerPhone: '+254700000000'
       },
       {
         id: '3',
@@ -95,7 +97,8 @@ const Index = () => {
         date: '2023-07-20',
         time: '11:00',
         status: 'upcoming',
-        price: 'KES 3,250'
+        price: 'KES 3,250',
+        customerPhone: '+254700000000'
       }
     ];
     
