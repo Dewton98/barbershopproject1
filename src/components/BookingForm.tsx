@@ -1,8 +1,9 @@
-
 import React, { useState } from 'react';
 import { Clock, Calendar, Scissors } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import type { Booking as BookingType } from "@/components/BookingHistory";
+import BookingConfirmation from './BookingConfirmation';
+import { sendSMS, formatAppointmentReminderMessage } from '../services/africasTalkingService';
 
 interface BookingFormProps {
   availableTimes: string[];
@@ -34,7 +35,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
   const [customerPhone, setCustomerPhone] = useState<string>('');
   const [reminder, setReminder] = useState<boolean>(true);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
-  const [currentBooking, setCurrentBooking] = useState<Omit<Booking, 'id' | 'status'> | null>(null);
+  const [currentBooking, setCurrentBooking] = useState<Omit<BookingType, 'id' | 'status'> | null>(null);
+  const [isSendingSMS, setIsSendingSMS] = useState<boolean>(false);
   const { toast } = useToast();
 
   const getServicePrice = (service: string): string => {
@@ -51,7 +53,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
     return priceMap[service] || '';
   };
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (!selectedDate || !selectedTime || !selectedService || !customerPhone) {
       toast({
         title: "Error",
@@ -87,6 +89,41 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
     };
 
     setCurrentBooking(newBooking);
+    
+    if (reminder) {
+      setIsSendingSMS(true);
+      try {
+        const message = formatAppointmentReminderMessage(
+          selectedService,
+          selectedDate,
+          selectedTime
+        );
+        
+        const response = await sendSMS(formattedPhone, message);
+        
+        if (response.success) {
+          toast({
+            title: "SMS Notification Set",
+            description: "You will receive an SMS reminder before your appointment",
+          });
+        } else {
+          toast({
+            title: "SMS Notification Failed",
+            description: "We couldn't set up your SMS reminder. Please contact us.",
+            variant: "destructive"
+          });
+        }
+      } catch (error) {
+        console.error("Error setting up SMS notification:", error);
+        toast({
+          title: "SMS Notification Error",
+          description: "There was an error setting up your SMS reminder.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsSendingSMS(false);
+      }
+    }
     
     setShowConfirmation(true);
     
@@ -186,16 +223,17 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
                 className="h-4 w-4 text-callGreen border-white/20 rounded focus:ring-callGreen bg-white/20"
               />
               <label htmlFor="reminder" className="ml-2 block text-white">
-                Send me a reminder 1 hour before my appointment
+                Send me an SMS reminder via Africa's Talking
               </label>
             </div>
           </div>
 
           <button 
             onClick={handleBooking}
-            className="mt-6 bg-callGreen hover:bg-callGreen/80 text-white font-medium py-2 px-6 rounded-md transition-colors"
+            disabled={isSendingSMS}
+            className={`mt-6 ${isSendingSMS ? 'bg-gray-500' : 'bg-callGreen hover:bg-callGreen/80'} text-white font-medium py-2 px-6 rounded-md transition-colors`}
           >
-            Book Appointment
+            {isSendingSMS ? 'Setting up SMS...' : 'Book Appointment'}
           </button>
         </div>
       </div>

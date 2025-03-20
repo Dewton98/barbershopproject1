@@ -36,7 +36,8 @@ const BookingHistory = ({ bookings }: BookingHistoryProps) => {
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
       
       <div className="relative z-10">
-        <h2 className="text-2xl font-semibold text-white mb-4">Your Booking History</h2>
+        <h2 className="text-2xl font-semibold text-white mb-1">Your Booking History</h2>
+        <p className="text-gray-300 text-sm mb-4">With SMS notifications via Africa's Talking</p>
         
         {(!bookings || bookings.length === 0) ? (
           <div className="text-center py-12">
