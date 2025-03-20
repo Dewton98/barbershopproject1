@@ -4,19 +4,11 @@ import { useToast } from "@/hooks/use-toast";
 import type { Booking as BookingType } from "@/components/BookingHistory";
 import BookingConfirmation from './BookingConfirmation';
 import { sendSMS, formatAppointmentReminderMessage } from '../services/africasTalkingService';
+import { useSupabase } from "@/integrations/supabase/provider";
 
 interface BookingFormProps {
   availableTimes: string[];
   onBookingSubmit: (booking: Omit<BookingType, 'id' | 'status'>) => void;
-}
-
-interface FormData {
-  service: string;
-  date: string;
-  time: string;
-  price: string;
-  customerPhone: string;
-  reminder: boolean;
 }
 
 export interface Booking {
@@ -38,6 +30,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
   const [currentBooking, setCurrentBooking] = useState<Omit<BookingType, 'id' | 'status'> | null>(null);
   const [isSendingSMS, setIsSendingSMS] = useState<boolean>(false);
   const { toast } = useToast();
+  const { user } = useSupabase();
 
   const getServicePrice = (service: string): string => {
     const priceMap: Record<string, string> = {
@@ -58,6 +51,15 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       toast({
         title: "Error",
         description: "Please fill in all required fields including your phone number",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to book an appointment",
         variant: "destructive"
       });
       return;

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
@@ -7,12 +6,16 @@ import HaircutServiceSection from "@/components/HaircutServiceSection";
 import MassageServiceSection from "@/components/MassageServiceSection";
 import GallerySection from "@/components/GallerySection";
 import NavigationTabs from "@/components/NavigationTabs";
+import Header from "@/components/Header";
+import { supabase } from "@/integrations/supabase/client";
+import { useSupabase } from "@/integrations/supabase/provider";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<'booking' | 'history'>('booking');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [barberPhone] = useState<string>('+254700000000');
   const { toast } = useToast();
+  const { user } = useSupabase();
 
   const availableTimes = [
     '09:00', '10:00', '11:00', '12:00', 
@@ -43,80 +46,159 @@ const Index = () => {
   ];
 
   useEffect(() => {
-    console.log('Loading bookings from localStorage');
-    const savedBookings = localStorage.getItem('barberBookings');
-    if (savedBookings) {
-      try {
-        const parsedBookings = JSON.parse(savedBookings);
-        console.log('Parsed bookings:', parsedBookings);
-        setBookings(parsedBookings);
-      } catch (error) {
-        console.error('Error parsing bookings from localStorage:', error);
-        setBookings([]);
+    fetchBookings();
+  }, [user]);
+
+  const fetchBookings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('Error fetching bookings:', error);
+        toast({
+          title: "Error",
+          description: "Could not fetch bookings",
+          variant: "destructive",
+        });
+        return;
       }
-    } else {
-      console.log('No bookings found in localStorage');
-    }
-  }, []);
-
-  const handleBookingSubmit = (newBookingData: Omit<Booking, 'id' | 'status'>) => {
-    const newBooking: Booking = {
-      id: Date.now().toString(),
-      ...newBookingData,
-      status: 'upcoming'
-    };
-
-    const updatedBookings = [newBooking, ...bookings];
-    setBookings(updatedBookings);
-    
-    localStorage.setItem('barberBookings', JSON.stringify(updatedBookings));
-    
-    // Show a toast when reminder is set
-    if (newBooking.reminder) {
-      toast({
-        title: "Reminder Set",
-        description: `You'll receive a reminder 1 hour before your appointment on ${newBooking.date} at ${newBooking.time}`,
-      });
+      
+      if (data) {
+        const formattedBookings: Booking[] = data.map(booking => ({
+          id: booking.id,
+          service: booking.service,
+          date: booking.date,
+          time: booking.time,
+          status: booking.status,
+          price: booking.price,
+          customerPhone: booking.customer_phone,
+          reminder: booking.reminder
+        }));
+        
+        setBookings(formattedBookings);
+      }
+    } catch (error) {
+      console.error('Error in fetchBookings:', error);
     }
   };
 
-  const addSampleBookings = () => {
-    const sampleBookings: Booking[] = [
+  const handleBookingSubmit = async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
+    try {
+      const bookingData = {
+        service: newBookingData.service,
+        date: newBookingData.date,
+        time: newBookingData.time,
+        price: newBookingData.price,
+        customer_phone: newBookingData.customerPhone,
+        reminder: newBookingData.reminder,
+        status: 'upcoming',
+        user_id: user?.id
+      };
+
+      const { data, error } = await supabase
+        .from('bookings')
+        .insert(bookingData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating booking:', error);
+        toast({
+          title: "Booking Failed",
+          description: "There was an error creating your booking.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data) {
+        const newBooking: Booking = {
+          id: data.id,
+          service: data.service,
+          date: data.date,
+          time: data.time,
+          status: data.status,
+          price: data.price,
+          customerPhone: data.customer_phone,
+          reminder: data.reminder
+        };
+
+        setBookings([newBooking, ...bookings]);
+        
+        if (newBooking.reminder) {
+          toast({
+            title: "Reminder Set",
+            description: `You'll receive a reminder 1 hour before your appointment on ${newBooking.date} at ${newBooking.time}`,
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error in handleBookingSubmit:', error);
+    }
+  };
+
+  const addSampleBookings = async () => {
+    const sampleBookings = [
       {
-        id: '1',
         service: 'Haircut',
         date: '2023-06-10',
         time: '10:00',
         status: 'completed',
         price: 'KES 3,900',
-        customerPhone: '+254700000000',
-        reminder: true
+        customer_phone: '+254700000000',
+        reminder: true,
+        user_id: user?.id
       },
       {
-        id: '2',
         service: 'Beard Trim',
         date: '2023-06-15',
         time: '14:00',
         status: 'cancelled',
         price: 'KES 2,600',
-        customerPhone: '+254700000000',
-        reminder: false
+        customer_phone: '+254700000000',
+        reminder: false,
+        user_id: user?.id
       },
       {
-        id: '3',
         service: 'Hot Shave',
         date: '2023-07-20',
         time: '11:00',
         status: 'upcoming',
         price: 'KES 3,250',
-        customerPhone: '+254700000000',
-        reminder: true
+        customer_phone: '+254700000000',
+        reminder: true,
+        user_id: user?.id
       }
     ];
     
-    const updatedBookings = [...sampleBookings, ...bookings];
-    setBookings(updatedBookings);
-    localStorage.setItem('barberBookings', JSON.stringify(updatedBookings));
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .insert(sampleBookings)
+        .select();
+        
+      if (error) {
+        console.error('Error adding sample bookings:', error);
+        toast({
+          title: "Error",
+          description: "Could not add sample bookings",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      fetchBookings();
+      
+      toast({
+        title: "Sample Bookings Added",
+        description: "Sample bookings have been added successfully",
+      });
+    } catch (error) {
+      console.error('Error in addSampleBookings:', error);
+    }
   };
 
   const handleTabChange = (tab: 'booking' | 'history') => {
@@ -134,6 +216,8 @@ const Index = () => {
     >
       <div className="absolute inset-0 bg-black/40" /> {/* Lighter overlay for the pastel background */}
       
+      <Header />
+      
       <div className="relative z-10 max-w-4xl mx-auto pt-16 px-4 pb-24">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-playfair font-bold text-white mb-4 leading-tight">
@@ -146,7 +230,6 @@ const Index = () => {
 
         {activeTab === 'booking' ? (
           <>
-            {/* Add Booking Form (Hidden until needed) */}
             <BookingForm
               availableTimes={availableTimes}
               onBookingSubmit={handleBookingSubmit}
