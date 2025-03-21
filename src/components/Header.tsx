@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSupabase } from '@/integrations/supabase/provider';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { User, LogOut } from 'lucide-react';
+import { User, LogOut, Shield } from 'lucide-react';
 
 const Header = () => {
   const { user } = useSupabase();
@@ -31,10 +31,18 @@ const Header = () => {
     }
   };
 
+  // Check if user is an admin (email contains 'admin')
+  const isAdmin = user?.email?.includes('admin') || false;
+
   return (
     <header className="fixed top-0 left-0 right-0 bg-black/40 backdrop-blur-md z-50">
       <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="text-white font-playfair font-bold text-xl">Premium Barber</div>
+        <div 
+          className="text-white font-playfair font-bold text-xl cursor-pointer"
+          onClick={() => navigate('/')}
+        >
+          Premium Barber
+        </div>
         
         {user ? (
           <div className="flex items-center space-x-4">
@@ -42,6 +50,17 @@ const Header = () => {
               <User className="w-4 h-4 mr-2" />
               <span className="text-sm">{user.email}</span>
             </div>
+            
+            {isAdmin && (
+              <button 
+                onClick={() => navigate('/admin')}
+                className="text-white hover:text-callGreen flex items-center text-sm"
+              >
+                <Shield className="w-4 h-4 mr-1" />
+                Admin
+              </button>
+            )}
+            
             <button 
               onClick={handleLogout}
               className="text-white hover:text-callGreen flex items-center text-sm"
