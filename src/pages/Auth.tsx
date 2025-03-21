@@ -4,11 +4,17 @@ import { supabase } from '@/integrations/supabase/client';
 import { useSupabase } from '@/integrations/supabase/provider';
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { FcGoogle } from 'react-icons/fc';
+import { Separator } from "@/components/ui/separator";
 
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const { toast } = useToast();
   const { user } = useSupabase();
@@ -64,6 +70,30 @@ const Auth = () => {
     }
   };
 
+  const handleGoogleAuth = async () => {
+    try {
+      setGoogleLoading(true);
+      
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      
+      if (error) throw error;
+      
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error?.message || "An error occurred during Google authentication",
+        variant: "destructive",
+      });
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
   return (
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center px-4"
@@ -82,8 +112,8 @@ const Auth = () => {
           
           <form onSubmit={handleAuth} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-white mb-2">Email</label>
-              <input
+              <Label htmlFor="email" className="text-white">Email</Label>
+              <Input
                 id="email"
                 type="email"
                 value={email}
@@ -95,8 +125,8 @@ const Auth = () => {
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-white mb-2">Password</label>
-              <input
+              <Label htmlFor="password" className="text-white">Password</Label>
+              <Input
                 id="password"
                 type="password"
                 value={password}
@@ -107,7 +137,7 @@ const Auth = () => {
               />
             </div>
             
-            <button
+            <Button
               type="submit"
               disabled={loading}
               className={`w-full py-3 rounded-md font-semibold text-white ${
@@ -115,11 +145,30 @@ const Auth = () => {
               } transition-colors`}
             >
               {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
-            </button>
+            </Button>
           </form>
+          
+          <div className="mt-6 flex items-center gap-3">
+            <Separator className="flex-1 bg-white/20" />
+            <span className="text-white text-sm">OR</span>
+            <Separator className="flex-1 bg-white/20" />
+          </div>
+          
+          <div className="mt-6">
+            <Button
+              type="button"
+              onClick={handleGoogleAuth}
+              disabled={googleLoading}
+              className="w-full bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 rounded flex items-center justify-center gap-2"
+            >
+              <FcGoogle className="w-5 h-5" />
+              {googleLoading ? 'Processing...' : 'Continue with Google'}
+            </Button>
+          </div>
           
           <div className="mt-6 text-center">
             <button
+              type="button"
               onClick={() => setIsLogin(!isLogin)}
               className="text-gray-300 hover:text-white transition-colors"
             >
