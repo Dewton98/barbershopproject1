@@ -205,7 +205,7 @@ const AdminBookings = () => {
                         </button>
                       )}
                       
-                      {booking.status === 'cancelled' && booking.status !== 'upcoming' && (
+                      {booking.status === 'cancelled' && (
                         <button
                           onClick={() => updateBookingStatus(booking.id, 'upcoming')}
                           className="text-blue-600 hover:text-blue-900"
