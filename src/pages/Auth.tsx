@@ -21,11 +21,35 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If user is already logged in, redirect to home page
+    // Check if we're returning from a OAuth redirect
+    const handleOAuthRedirect = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error("Error checking session:", error);
+        toast({
+          title: "Authentication Error",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // If we have a user session, consider auth successful
+      if (data.session) {
+        console.log("Session detected after OAuth redirect");
+        navigate('/');
+      }
+    };
+    
+    // Call the function to handle OAuth redirect
+    handleOAuthRedirect();
+    
+    // Also check if user is already logged in for normal navigation
     if (user) {
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, navigate, toast]);
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -77,7 +101,7 @@ const Auth = () => {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth`,
+          redirectTo: window.location.origin,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
