@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useSupabase } from '@/integrations/supabase/provider';
@@ -21,35 +20,50 @@ const Auth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if we're returning from a OAuth redirect
-    const handleOAuthRedirect = async () => {
-      const { data, error } = await supabase.auth.getSession();
+    const checkSession = async () => {
+      console.log("Checking session on Auth page load...");
       
-      if (error) {
-        console.error("Error checking session:", error);
+      // Get the current session
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error("Error checking session:", sessionError);
         toast({
           title: "Authentication Error",
-          description: error.message,
+          description: sessionError.message,
           variant: "destructive",
         });
         return;
       }
       
-      // If we have a user session, consider auth successful
-      if (data.session) {
-        console.log("Session detected after OAuth redirect");
+      // If we have a session, redirect to the home page
+      if (sessionData?.session) {
+        console.log("Active session found, redirecting to home");
         navigate('/');
+      } else {
+        console.log("No active session found");
       }
     };
     
-    // Call the function to handle OAuth redirect
-    handleOAuthRedirect();
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log("Auth state changed:", event, !!session);
+        
+        if (session) {
+          console.log("New session detected, redirecting to home");
+          navigate('/');
+        }
+      }
+    );
     
-    // Also check if user is already logged in for normal navigation
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate, toast]);
+    checkSession();
+    
+    // Clean up the subscription when component unmounts
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate, toast]);
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -98,10 +112,14 @@ const Auth = () => {
     try {
       setGoogleLoading(true);
       
+      // Get the current URL of the application - fully qualified URL
+      const currentUrl = window.location.origin;
+      console.log("Current URL for redirect:", currentUrl);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: currentUrl,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
