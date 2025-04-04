@@ -1,65 +1,28 @@
 
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import React, { useState } from 'react';
 import { useSupabase } from '@/integrations/supabase/provider';
-import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from 'react-router-dom';
 import { Separator } from "@/components/ui/separator";
 import LoginForm from '@/components/auth/LoginForm';
 import RegisterForm from '@/components/auth/RegisterForm';
 import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const { toast } = useToast();
   const { user } = useSupabase();
-  const navigate = useNavigate();
+  
+  // Use our custom hook to handle authentication redirects
+  // If user is authenticated, redirect to home page
+  const { isLoading } = useAuthRedirect('/', true);
 
-  useEffect(() => {
-    const checkSession = async () => {
-      console.log("Checking session on Auth page load...");
-      
-      // Get the current session
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        console.error("Error checking session:", sessionError);
-        toast({
-          title: "Authentication Error",
-          description: sessionError.message,
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // If we have a session, redirect to the home page
-      if (sessionData?.session) {
-        console.log("Active session found, redirecting to home");
-        navigate('/');
-      } else {
-        console.log("No active session found");
-      }
-    };
-    
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log("Auth state changed:", event, !!session);
-        
-        if (session) {
-          console.log("New session detected, redirecting to home");
-          navigate('/');
-        }
-      }
+  // Show loading indicator while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-callGreen border-t-transparent"></div>
+      </div>
     );
-    
-    checkSession();
-    
-    // Clean up the subscription when component unmounts
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [navigate, toast]);
+  }
 
   return (
     <div 
