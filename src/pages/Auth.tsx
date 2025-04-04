@@ -1,17 +1,18 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useSupabase } from '@/integrations/supabase/provider';
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { FcGoogle } from 'react-icons/fc';
 import { Separator } from "@/components/ui/separator";
+import { BsPersonFill, BsEnvelopeFill, BsLockFill } from 'react-icons/bs';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
@@ -88,6 +89,11 @@ const Auth = () => {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              username: username,
+            }
+          }
         });
         
         if (error) throw error;
@@ -155,41 +161,62 @@ const Auth = () => {
       
       <div className="relative z-10 w-full max-w-md">
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20">
-          <h2 className="text-3xl font-playfair font-bold text-white mb-6 text-center">
-            {isLogin ? 'Welcome Back' : 'Create Account'}
+          <h2 className="text-3xl font-playfair font-bold text-white mb-6 text-center animation">
+            {isLogin ? 'Welcome Back' : 'Sign Up'}
           </h2>
           
           <form onSubmit={handleAuth} className="space-y-6">
-            <div>
-              <Label htmlFor="email" className="text-white">Email</Label>
-              <Input
-                id="email"
+            {!isLogin && (
+              <div className="relative input-box animation">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="w-full bg-white/20 text-white border-b border-white/20 p-3 pl-10 focus:outline-none focus:border-white transition-all"
+                  placeholder=" "
+                />
+                <label className="absolute text-white/80 left-10 top-3 transition-all duration-300 pointer-events-none">
+                  Username
+                </label>
+                <BsPersonFill className="absolute left-3 top-4 text-white" size={18} />
+              </div>
+            )}
+            
+            <div className="relative input-box animation">
+              <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full bg-white/20 text-white border border-white/20 rounded-md p-3"
-                placeholder="your@email.com"
+                className="w-full bg-white/20 text-white border-b border-white/20 p-3 pl-10 focus:outline-none focus:border-white transition-all"
+                placeholder=" "
               />
+              <label className="absolute text-white/80 left-10 top-3 transition-all duration-300 pointer-events-none">
+                Email
+              </label>
+              <BsEnvelopeFill className="absolute left-3 top-4 text-white" size={18} />
             </div>
             
-            <div>
-              <Label htmlFor="password" className="text-white">Password</Label>
-              <Input
-                id="password"
+            <div className="relative input-box animation">
+              <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-white/20 text-white border border-white/20 rounded-md p-3"
-                placeholder="••••••••"
+                className="w-full bg-white/20 text-white border-b border-white/20 p-3 pl-10 focus:outline-none focus:border-white transition-all"
+                placeholder=" "
               />
+              <label className="absolute text-white/80 left-10 top-3 transition-all duration-300 pointer-events-none">
+                Password
+              </label>
+              <BsLockFill className="absolute left-3 top-4 text-white" size={18} />
             </div>
             
             <Button
               type="submit"
               disabled={loading}
-              className={`w-full py-3 rounded-md font-semibold text-white ${
+              className={`w-full py-3 rounded-md font-semibold text-white animation ${
                 loading ? 'bg-gray-500' : 'bg-callGreen hover:bg-callGreen/80'
               } transition-colors`}
             >
@@ -208,7 +235,7 @@ const Auth = () => {
               type="button"
               onClick={handleGoogleAuth}
               disabled={googleLoading}
-              className="w-full bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 rounded flex items-center justify-center gap-2"
+              className="w-full bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 rounded flex items-center justify-center gap-2 animation"
             >
               <FcGoogle className="w-5 h-5" />
               {googleLoading ? 'Processing...' : 'Continue with Google'}
@@ -219,7 +246,7 @@ const Auth = () => {
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-gray-300 hover:text-white transition-colors"
+              className="text-gray-300 hover:text-white transition-colors animation"
             >
               {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
             </button>

@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -111,3 +112,42 @@ button {
 .service-card:hover::after {
   @apply w-full;
 }
+
+/* Auth form styles */
+.input-box input:focus ~ label,
+.input-box input:not(:placeholder-shown) ~ label {
+  @apply -translate-y-5 text-xs text-white;
+}
+
+.animation {
+  animation: fade-in-up 0.5s forwards;
+  opacity: 0;
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.input-box:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.input-box:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.input-box:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+form .animation {
+  animation-delay: 0.4s;
+}
+
