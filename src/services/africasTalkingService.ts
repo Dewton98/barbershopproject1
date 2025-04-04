@@ -1,11 +1,16 @@
 
 // Africa's Talking SMS Service
-// This is a client-side implementation for demo purposes
+// This service integrates with Africa's Talking API to send SMS notifications
 
 interface SMSResponse {
   success: boolean;
   message: string;
+  data?: any;
 }
+
+// Default API endpoint for Africa's Talking SMS API
+const AT_API_URL = "https://api.africastalking.com/version1/messaging";
+const AT_USERNAME = "your_username"; // Replace with your actual username
 
 export const sendSMS = async (
   phoneNumber: string, 
@@ -14,23 +19,62 @@ export const sendSMS = async (
   console.log(`Sending SMS to ${phoneNumber}: ${message}`);
   
   try {
-    // This is a mock implementation
-    // In a real application, you would call an API endpoint that uses Africa's Talking API
-    // The API call should be done on the server side to protect your API credentials
+    // For development/demo purposes, this function can work in two modes:
+    // 1. Real API call mode (when deployed with proper credentials)
+    // 2. Simulation mode (for local testing without credentials)
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Check if we're in development/demo mode
+    const isDemoMode = true; // Set to false when deploying with real credentials
     
-    // For demo purposes, we'll always return success
-    return {
-      success: true,
-      message: "SMS sent successfully"
-    };
+    if (isDemoMode) {
+      // Simulate API call for demo purposes
+      console.log("SMS DEMO MODE: Simulating API call to Africa's Talking");
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      return {
+        success: true,
+        message: "Demo SMS sent successfully (simulation)",
+        data: {
+          phoneNumber,
+          message,
+          timestamp: new Date().toISOString()
+        }
+      };
+    } else {
+      // Real API implementation for production use
+      // This would use the Africa's Talking API
+      const formData = new URLSearchParams();
+      formData.append('username', AT_USERNAME);
+      formData.append('to', phoneNumber);
+      formData.append('message', message);
+      
+      const response = await fetch(AT_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+          'apiKey': 'YOUR_API_KEY' // This should be stored in environment variables
+        },
+        body: formData.toString()
+      });
+      
+      const data = await response.json();
+      
+      if (data.SMSMessageData && data.SMSMessageData.Recipients && data.SMSMessageData.Recipients[0].status === "Success") {
+        return {
+          success: true,
+          message: "SMS sent successfully",
+          data
+        };
+      } else {
+        throw new Error(data.SMSMessageData ? data.SMSMessageData.Message : "Unknown error");
+      }
+    }
   } catch (error) {
     console.error("Error sending SMS:", error);
     return {
       success: false,
-      message: "Failed to send SMS"
+      message: error instanceof Error ? error.message : "Failed to send SMS"
     };
   }
 };
@@ -41,4 +85,50 @@ export const formatAppointmentReminderMessage = (
   time: string
 ): string => {
   return `REMINDER: Your appointment for ${service} is scheduled for ${date} at ${time}. Thank you for choosing Premium Barber Shop.`;
+};
+
+export const validateKenyanPhoneNumber = (phoneNumber: string): { isValid: boolean; formatted?: string } => {
+  // Remove any non-digit characters
+  const digitsOnly = phoneNumber.replace(/\D/g, '');
+  
+  // Check if it's a valid Kenyan format
+  if (/^(?:254|\+254|0)?(7\d{8})$/.test(digitsOnly)) {
+    // Format to international format +254XXXXXXXXX
+    const numberPart = digitsOnly.match(/^(?:254|\+254|0)?(7\d{8})$/)?.[1];
+    if (numberPart) {
+      return {
+        isValid: true,
+        formatted: `+254${numberPart}`
+      };
+    }
+  }
+  
+  return { isValid: false };
+};
+
+export const formatScheduledMessage = (
+  type: 'booking' | 'reminder' | 'cancellation',
+  bookingDetails: {
+    service: string;
+    date: string;
+    time: string;
+    customerName?: string;
+  }
+): string => {
+  const { service, date, time, customerName } = bookingDetails;
+  const greeting = customerName ? `Hello ${customerName}` : 'Hello';
+  
+  switch (type) {
+    case 'booking':
+      return `${greeting}, your appointment for ${service} has been confirmed for ${date} at ${time}. We look forward to seeing you at Premium Barber Shop.`;
+    
+    case 'reminder':
+      return `${greeting}, this is a reminder that your appointment for ${service} is scheduled for tomorrow, ${date} at ${time}. We look forward to seeing you at Premium Barber Shop.`;
+    
+    case 'cancellation':
+      return `${greeting}, your appointment for ${service} scheduled on ${date} at ${time} has been cancelled. Please contact us to reschedule.`;
+    
+    default:
+      return `${greeting}, you have an appointment for ${service} on ${date} at ${time} at Premium Barber Shop.`;
+  }
 };

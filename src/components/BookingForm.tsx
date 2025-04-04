@@ -1,9 +1,14 @@
+
 import React, { useState } from 'react';
 import { Clock, Calendar, Scissors } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import type { Booking as BookingType } from "@/components/BookingHistory";
 import BookingConfirmation from './BookingConfirmation';
-import { sendSMS, formatAppointmentReminderMessage } from '../services/africasTalkingService';
+import { 
+  sendSMS, 
+  formatAppointmentReminderMessage, 
+  validateKenyanPhoneNumber 
+} from '../services/africasTalkingService';
 import { useSupabase } from "@/integrations/supabase/provider";
 
 interface BookingFormProps {
@@ -65,14 +70,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       return;
     }
 
-    let formattedPhone = customerPhone;
-    
-    if (customerPhone.startsWith('0') && customerPhone.length === 10) {
-      formattedPhone = '+254' + customerPhone.substring(1);
-    }
-    
-    const phoneRegex = /^(\+254\d{9}|0\d{9})$/;
-    if (!phoneRegex.test(customerPhone)) {
+    // Validate and format the phone number
+    const phoneValidation = validateKenyanPhoneNumber(customerPhone);
+    if (!phoneValidation.isValid) {
       toast({
         title: "Invalid Phone Number",
         description: "Please enter a valid Kenyan phone number (07XXXXXXXX or +254XXXXXXXX)",
@@ -80,7 +80,9 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       });
       return;
     }
-
+    
+    const formattedPhone = phoneValidation.formatted || customerPhone;
+    
     const newBooking = {
       service: selectedService,
       date: selectedDate,
