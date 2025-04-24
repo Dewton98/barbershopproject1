@@ -1,10 +1,8 @@
 
 import React, { useState } from 'react';
 import { useSupabase } from '@/integrations/supabase/provider';
-import { Separator } from "@/components/ui/separator";
 import LoginForm from '@/components/auth/LoginForm';
 import RegisterForm from '@/components/auth/RegisterForm';
-import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const Auth = () => {
@@ -45,16 +43,6 @@ const Auth = () => {
           ) : (
             <RegisterForm onRegisterSuccess={() => setIsLogin(true)} />
           )}
-          
-          <div className="mt-6 flex items-center gap-3">
-            <Separator className="flex-1 bg-white/20" />
-            <span className="text-white text-sm">OR</span>
-            <Separator className="flex-1 bg-white/20" />
-          </div>
-          
-          <div className="mt-6">
-            <GoogleAuthButton />
-          </div>
           
           <div className="mt-6 text-center">
             <button
