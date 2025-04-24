@@ -13,13 +13,15 @@ const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <div className="min-h-screen flex flex-col">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 };
 
@@ -27,9 +29,11 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <SupabaseProvider>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <AppRoutes />
+        <div className="min-h-screen flex flex-col">
+          <Toaster />
+          <Sonner />
+          <AppRoutes />
+        </div>
       </TooltipProvider>
     </SupabaseProvider>
   </QueryClientProvider>
