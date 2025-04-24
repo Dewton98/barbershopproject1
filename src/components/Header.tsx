@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield } from 'lucide-react';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -16,14 +15,6 @@ const Header = () => {
           >
             Premium Barber
           </div>
-          
-          <button 
-            onClick={() => navigate('/admin')}
-            className="text-white hover:text-callGreen flex items-center text-sm"
-          >
-            <Shield className="w-4 h-4 mr-1" />
-            Admin
-          </button>
         </div>
       </div>
     </header>
