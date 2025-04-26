@@ -29,15 +29,26 @@ export const SupabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
+        
+        // Log auth events for debugging
+        console.log(`Auth state changed: ${event}`, session?.user?.email || 'No user');
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setSession(session);
+        setUser(session?.user ?? null);
+      } catch (error) {
+        console.error('Error checking session:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    checkSession();
 
     return () => subscription.unsubscribe();
   }, []);

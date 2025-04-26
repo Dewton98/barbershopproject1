@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
@@ -14,6 +13,7 @@ import { useSupabase } from "@/integrations/supabase/provider";
 const Index = () => {
   const [activeTab, setActiveTab] = useState<'booking' | 'history'>('booking');
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [barberPhone] = useState<string>('+254700000000');
   const { toast } = useToast();
   const { user } = useSupabase();
@@ -51,19 +51,50 @@ const Index = () => {
   }, [user]);
 
   const fetchBookings = async () => {
+    setIsLoading(true);
+    
     try {
-      const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .order('created_at', { ascending: false });
+      let retries = 3;
+      let success = false;
+      let data = null;
+      let error = null;
       
-      if (error) {
-        console.error('Error fetching bookings:', error);
+      while (retries > 0 && !success) {
+        try {
+          const response = await supabase
+            .from('bookings')
+            .select('*')
+            .order('created_at', { ascending: false });
+          
+          if (response.error) {
+            error = response.error;
+            console.warn(`Retry attempt ${4-retries}: Failed to fetch bookings`, error);
+            retries--;
+            if (retries > 0) {
+              await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+            }
+          } else {
+            data = response.data;
+            success = true;
+          }
+        } catch (e) {
+          console.error('Network error in fetchBookings:', e);
+          error = e;
+          retries--;
+          if (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+          }
+        }
+      }
+      
+      if (!success) {
+        console.error('Error fetching bookings after retries:', error);
         toast({
-          title: "Error",
-          description: "Could not fetch bookings",
+          title: "Connection Issue",
+          description: "Could not connect to our servers. Your data will load when the connection is restored.",
           variant: "destructive",
         });
+        setIsLoading(false);
         return;
       }
       
@@ -83,10 +114,11 @@ const Index = () => {
       }
     } catch (error) {
       console.error('Error in fetchBookings:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Use useCallback to memoize the handleBookingSubmit function to avoid recreating it on each render
   const handleBookingSubmit = useCallback(async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
     try {
       const bookingData = {
@@ -243,13 +275,22 @@ const Index = () => {
           </>
         ) : (
           <div className="bg-white/10 backdrop-blur-md dark:bg-gray-800/10 rounded-xl p-6 md:p-8 mb-8">
-            <BookingHistory bookings={bookings} />
-            <button 
-              onClick={addSampleBookings}
-              className="mt-4 bg-gray-700 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-4 py-2 rounded text-sm"
-            >
-              Add Sample Bookings
-            </button>
+            {isLoading ? (
+              <div className="py-8 text-center">
+                <div className="w-8 h-8 border-4 border-callGreen border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-white">Loading your bookings...</p>
+              </div>
+            ) : (
+              <>
+                <BookingHistory bookings={bookings} />
+                <button 
+                  onClick={addSampleBookings}
+                  className="mt-4 bg-gray-700 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-4 py-2 rounded text-sm"
+                >
+                  Add Sample Bookings
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>

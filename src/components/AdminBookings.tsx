@@ -19,16 +19,49 @@ const AdminBookings = () => {
     try {
       setLoading(true);
       
-      let query = supabase.from('bookings').select('*').order('date', { ascending: false });
+      let retries = 3;
+      let success = false;
+      let data = null;
+      let error = null;
       
-      if (filter !== 'all') {
-        query = query.eq('status', filter);
+      while (retries > 0 && !success) {
+        try {
+          let query = supabase.from('bookings').select('*').order('date', { ascending: false });
+          
+          if (filter !== 'all') {
+            query = query.eq('status', filter);
+          }
+          
+          const response = await query;
+          
+          if (response.error) {
+            error = response.error;
+            console.warn(`Retry attempt ${4-retries}: Failed to fetch bookings`, error);
+            retries--;
+            if (retries > 0) {
+              await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+            }
+          } else {
+            data = response.data;
+            success = true;
+          }
+        } catch (e) {
+          console.error('Network error in fetchBookings:', e);
+          error = e;
+          retries--;
+          if (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+          }
+        }
       }
       
-      const { data, error } = await query;
-      
-      if (error) {
-        throw error;
+      if (!success) {
+        toast({
+          title: "Connection Issue",
+          description: "Could not connect to our servers. Please try again later.",
+          variant: "destructive",
+        });
+        return;
       }
       
       if (data) {
