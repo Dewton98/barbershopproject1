@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Clock, Calendar, Scissors } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -93,6 +92,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
     };
 
     setCurrentBooking(newBooking);
+    setShowConfirmation(true);
     
     if (reminder) {
       setIsSendingSMS(true);
@@ -128,8 +128,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
         setIsSendingSMS(false);
       }
     }
-    
-    setShowConfirmation(true);
     
     onBookingSubmit(newBooking);
   };

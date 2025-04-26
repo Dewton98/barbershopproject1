@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
 import BookingForm from "@/components/BookingForm";
@@ -85,7 +86,8 @@ const Index = () => {
     }
   };
 
-  const handleBookingSubmit = async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
+  // Use useCallback to memoize the handleBookingSubmit function to avoid recreating it on each render
+  const handleBookingSubmit = useCallback(async (newBookingData: Omit<Booking, 'id' | 'status'>) => {
     try {
       const bookingData = {
         service: newBookingData.service,
@@ -126,7 +128,7 @@ const Index = () => {
           reminder: data.reminder
         };
 
-        setBookings([newBooking, ...bookings]);
+        setBookings(prevBookings => [newBooking, ...prevBookings]);
         
         if (newBooking.reminder) {
           toast({
@@ -138,7 +140,7 @@ const Index = () => {
     } catch (error) {
       console.error('Error in handleBookingSubmit:', error);
     }
-  };
+  }, [toast, user, supabase]);
 
   const addSampleBookings = async () => {
     const sampleBookings = [
