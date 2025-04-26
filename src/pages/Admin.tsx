@@ -40,6 +40,18 @@ const Admin = () => {
     checkAdminStatus();
   }, [user]);
 
+  // Use effect to show toast when isAdmin is set to false
+  useEffect(() => {
+    if (isAdmin === false && !isLoading) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access the admin area",
+        variant: "destructive",
+      });
+      navigate("/", { replace: true });
+    }
+  }, [isAdmin, isLoading, toast, navigate]);
+
   if (isLoading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-background">
@@ -48,13 +60,10 @@ const Admin = () => {
     );
   }
 
+  // Instead of rendering a Navigate component and calling toast during render,
+  // we handle this in the useEffect above
   if (!isAdmin) {
-    toast({
-      title: "Access Denied",
-      description: "You don't have permission to access the admin area",
-      variant: "destructive",
-    });
-    return <Navigate to="/" replace />;
+    return null; // Return null while the navigation happens in useEffect
   }
 
   return (
