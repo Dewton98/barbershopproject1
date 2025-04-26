@@ -213,10 +213,10 @@ const Index = () => {
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
       style={{
         backgroundImage: 'url("/lovable-uploads/307d6cc2-7249-4075-95a2-c1ce6c09f4ea.png")',
-        backgroundColor: '#9ED0BD', // Soft mint green background that matches the image
+        backgroundColor: '#9ED0BD',
       }}
     >
-      <div className="absolute inset-0 bg-black/40" /> {/* Lighter overlay for the pastel background */}
+      <div className="absolute inset-0 bg-black/40" />
       
       <Header />
       
@@ -242,11 +242,11 @@ const Index = () => {
             <GallerySection galleryImages={galleryImages} />
           </>
         ) : (
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 md:p-8 mb-8">
+          <div className="bg-white/10 backdrop-blur-md dark:bg-gray-800/10 rounded-xl p-6 md:p-8 mb-8">
             <BookingHistory bookings={bookings} />
             <button 
               onClick={addSampleBookings}
-              className="mt-4 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm"
+              className="mt-4 bg-gray-700 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-4 py-2 rounded text-sm"
             >
               Add Sample Bookings
             </button>
