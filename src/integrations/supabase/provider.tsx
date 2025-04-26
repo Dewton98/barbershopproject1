@@ -29,9 +29,6 @@ export const SupabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
-        
-        // Log auth events for debugging
-        console.log(`Auth state changed: ${event}`, session?.user?.email || 'No user');
       }
     );
 

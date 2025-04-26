@@ -13,7 +13,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storage: localStorage,
   },
   global: {
-    // Fix: Use proper TypeScript types for fetch parameters
     fetch: (url, options) => fetch(url, options),
     headers: { 'x-custom-app-header': 'premium-barber-app' },
   },
