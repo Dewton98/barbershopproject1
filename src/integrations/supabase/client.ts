@@ -11,9 +11,17 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     autoRefreshToken: true,
     storage: localStorage,
+    // Adding these options to improve authentication reliability
+    detectSessionInUrl: true,
+    flowType: 'pkce',
   },
   global: {
-    fetch: (url, options) => fetch(url, options),
+    fetch: (url, options) => {
+      return fetch(url, {
+        ...options,
+        credentials: 'same-origin',
+      });
+    },
     headers: { 'x-custom-app-header': 'premium-barber-app' },
   },
   realtime: {
