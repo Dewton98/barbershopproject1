@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
 import BookingForm from "@/components/BookingForm";
-import HaircutServiceSection from "@/components/HaircutServiceSection";
-import MassageServiceSection from "@/components/MassageServiceSection";
 import GallerySection from "@/components/GallerySection";
 import NavigationTabs from "@/components/NavigationTabs";
 import Header from "@/components/Header";
@@ -26,23 +24,23 @@ const Index = () => {
   const galleryImages = [
     {
       src: "/lovable-uploads/1d67ea84-a863-483f-9e89-b6c7fd2ce380.png",
-      alt: "Textured hairstyle with designs",
-      caption: "Premium Textured Designs"
+      alt: "Service image 1",
+      caption: "Quality Service"
     },
     {
       src: "/lovable-uploads/d31dd35d-6e7c-4c2b-8fe9-4b9e2b26d4c4.png",
-      alt: "Clean fade haircut",
-      caption: "Professional Clean Fade"
+      alt: "Service image 2",
+      caption: "Professional Care"
     },
     {
       src: "/lovable-uploads/a1f1666e-6805-4b83-9476-db4cd9a9079d.png",
-      alt: "Designer haircut with patterns",
-      caption: "Custom Design Patterns"
+      alt: "Service image 3",
+      caption: "Custom Solutions"
     },
     {
       src: "/lovable-uploads/767ead22-789b-4626-8449-5ae430612cc3.png",
-      alt: "Creative wave designs",
-      caption: "Precision Wave Styling"
+      alt: "Service image 4",
+      caption: "Premium Experience"
     }
   ];
 
@@ -255,10 +253,10 @@ const Index = () => {
       <div className="relative z-10 max-w-4xl mx-auto pt-16 px-4 pb-24">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-playfair font-bold text-white mb-4 leading-tight">
-            Premium Barber Shop
+            Project 1
           </h1>
           <p className="text-xl text-gray-200">
-            Experience the art of perfect grooming
+            Experience excellence in service
           </p>
         </div>
 
@@ -268,9 +266,6 @@ const Index = () => {
               availableTimes={availableTimes}
               onBookingSubmit={handleBookingSubmit}
             />
-            
-            <HaircutServiceSection />
-            <MassageServiceSection />
             <GallerySection galleryImages={galleryImages} />
           </>
         ) : (
