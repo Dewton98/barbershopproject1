@@ -13,7 +13,7 @@ const Header = () => {
             className="text-white font-playfair font-bold text-xl cursor-pointer"
             onClick={() => navigate('/')}
           >
-            Premium Barber
+            Project 1
           </div>
         </div>
       </div>
