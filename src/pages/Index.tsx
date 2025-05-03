@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
@@ -265,28 +264,31 @@ const Index = () => {
 
         {activeTab === 'booking' ? (
           <>
-            {/* Booking Section */}
-            <section id="booking" className="scroll-mt-20">
-              <BookingForm
-                availableTimes={availableTimes}
-                onBookingSubmit={handleBookingSubmit}
-              />
-            </section>
-            
-            {/* Haircut Services Section */}
-            <section id="haircut" className="scroll-mt-20">
-              <HaircutServiceSection />
-            </section>
-            
-            {/* Massage Services Section */}
-            <section id="massage" className="scroll-mt-20">
-              <MassageServiceSection />
-            </section>
-            
-            {/* Gallery Section */}
-            <section id="gallery" className="scroll-mt-20">
-              <GallerySection galleryImages={galleryImages} />
-            </section>
+            {/* Each section is now visually distinct with its own SectionWindow */}
+            <div className="space-y-16">
+              {/* Booking Section */}
+              <section id="booking" className="scroll-mt-20">
+                <BookingForm
+                  availableTimes={availableTimes}
+                  onBookingSubmit={handleBookingSubmit}
+                />
+              </section>
+              
+              {/* Haircut Services Section */}
+              <section id="haircut" className="scroll-mt-20">
+                <HaircutServiceSection />
+              </section>
+              
+              {/* Massage Services Section */}
+              <section id="massage" className="scroll-mt-20">
+                <MassageServiceSection />
+              </section>
+              
+              {/* Gallery Section */}
+              <section id="gallery" className="scroll-mt-20">
+                <GallerySection galleryImages={galleryImages} />
+              </section>
+            </div>
           </>
         ) : (
           <div className="bg-white/10 backdrop-blur-md dark:bg-gray-800/10 rounded-xl p-6 md:p-8 mb-8">
