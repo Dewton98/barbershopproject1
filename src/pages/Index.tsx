@@ -1,7 +1,10 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
 import BookingForm from "@/components/BookingForm";
+import HaircutServiceSection from "@/components/HaircutServiceSection";
+import MassageServiceSection from "@/components/MassageServiceSection";
 import GallerySection from "@/components/GallerySection";
 import NavigationTabs from "@/components/NavigationTabs";
 import Header from "@/components/Header";
@@ -266,6 +269,9 @@ const Index = () => {
               availableTimes={availableTimes}
               onBookingSubmit={handleBookingSubmit}
             />
+            
+            <HaircutServiceSection />
+            <MassageServiceSection />
             <GallerySection galleryImages={galleryImages} />
           </>
         ) : (
