@@ -265,14 +265,28 @@ const Index = () => {
 
         {activeTab === 'booking' ? (
           <>
-            <BookingForm
-              availableTimes={availableTimes}
-              onBookingSubmit={handleBookingSubmit}
-            />
+            {/* Booking Section */}
+            <section id="booking" className="scroll-mt-20">
+              <BookingForm
+                availableTimes={availableTimes}
+                onBookingSubmit={handleBookingSubmit}
+              />
+            </section>
             
-            <HaircutServiceSection />
-            <MassageServiceSection />
-            <GallerySection galleryImages={galleryImages} />
+            {/* Haircut Services Section */}
+            <section id="haircut" className="scroll-mt-20">
+              <HaircutServiceSection />
+            </section>
+            
+            {/* Massage Services Section */}
+            <section id="massage" className="scroll-mt-20">
+              <MassageServiceSection />
+            </section>
+            
+            {/* Gallery Section */}
+            <section id="gallery" className="scroll-mt-20">
+              <GallerySection galleryImages={galleryImages} />
+            </section>
           </>
         ) : (
           <div className="bg-white/10 backdrop-blur-md dark:bg-gray-800/10 rounded-xl p-6 md:p-8 mb-8">
