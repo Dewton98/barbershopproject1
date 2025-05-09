@@ -9,7 +9,12 @@ import {
 } from "@/components/ui/sheet";
 import SectionNavigation from './SectionNavigation';
 
-const Header = () => {
+interface HeaderProps {
+  activeSection: 'booking' | 'haircut' | 'massage' | 'gallery';
+  onSectionChange: (section: 'booking' | 'haircut' | 'massage' | 'gallery') => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ activeSection, onSectionChange }) => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -31,7 +36,13 @@ const Header = () => {
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="bg-black/80 backdrop-blur-md border-white/10">
-              <SectionNavigation onItemClick={() => setIsMenuOpen(false)} />
+              <SectionNavigation 
+                activeSection={activeSection}
+                onSectionChange={(section) => {
+                  onSectionChange(section);
+                  setIsMenuOpen(false);
+                }} 
+              />
             </SheetContent>
           </Sheet>
         </div>

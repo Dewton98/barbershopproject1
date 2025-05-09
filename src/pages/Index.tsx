@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
@@ -12,6 +13,7 @@ import { useSupabase } from "@/integrations/supabase/provider";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<'booking' | 'history'>('booking');
+  const [activeSection, setActiveSection] = useState<'booking' | 'haircut' | 'massage' | 'gallery'>('booking');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [barberPhone] = useState<string>('+254700000000');
@@ -240,6 +242,15 @@ const Index = () => {
     setActiveTab(tab);
   };
 
+  const handleSectionChange = (section: 'booking' | 'haircut' | 'massage' | 'gallery') => {
+    console.log('Changing section to:', section);
+    setActiveSection(section);
+    // If the user is in history tab, switch to booking tab when selecting a section
+    if (activeTab !== 'booking') {
+      setActiveTab('booking');
+    }
+  };
+
   return (
     <div 
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
@@ -250,7 +261,7 @@ const Index = () => {
     >
       <div className="absolute inset-0 bg-black/40" />
       
-      <Header />
+      <Header onSectionChange={handleSectionChange} activeSection={activeSection} />
       
       <div className="relative z-10 max-w-4xl mx-auto pt-16 px-4 pb-24">
         <div className="text-center mb-12">
@@ -264,31 +275,33 @@ const Index = () => {
 
         {activeTab === 'booking' ? (
           <>
-            {/* Each section is now visually distinct with its own SectionWindow */}
-            <div className="space-y-16">
-              {/* Booking Section */}
+            {/* Only render the active section */}
+            {activeSection === 'booking' && (
               <section id="booking" className="scroll-mt-20">
                 <BookingForm
                   availableTimes={availableTimes}
                   onBookingSubmit={handleBookingSubmit}
                 />
               </section>
-              
-              {/* Haircut Services Section */}
+            )}
+            
+            {activeSection === 'haircut' && (
               <section id="haircut" className="scroll-mt-20">
                 <HaircutServiceSection />
               </section>
-              
-              {/* Massage Services Section */}
+            )}
+            
+            {activeSection === 'massage' && (
               <section id="massage" className="scroll-mt-20">
                 <MassageServiceSection />
               </section>
-              
-              {/* Gallery Section */}
+            )}
+            
+            {activeSection === 'gallery' && (
               <section id="gallery" className="scroll-mt-20">
                 <GallerySection galleryImages={galleryImages} />
               </section>
-            </div>
+            )}
           </>
         ) : (
           <div className="bg-white/10 backdrop-blur-md dark:bg-gray-800/10 rounded-xl p-6 md:p-8 mb-8">
