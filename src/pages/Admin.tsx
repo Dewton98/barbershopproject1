@@ -12,6 +12,7 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeView, setActiveView] = useState<'bookings' | 'staff' | 'customers'>('bookings');
+  const [activeSection, setActiveSection] = useState<'booking' | 'haircut' | 'massage' | 'gallery'>('booking');
   const { user } = useSupabase();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -68,7 +69,10 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header />
+      <Header 
+        activeSection={activeSection} 
+        onSectionChange={setActiveSection}
+      />
       
       <div className="pt-16 flex">
         <AdminSidebar activeView={activeView} onViewChange={setActiveView} />
