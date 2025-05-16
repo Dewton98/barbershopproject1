@@ -7,6 +7,9 @@ import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import AdminBookings from '@/components/AdminBookings';
 import AdminSidebar from '@/components/AdminSidebar';
+import HaircutServiceSection from '@/components/HaircutServiceSection';
+import MassageServiceSection from '@/components/MassageServiceSection';
+import GallerySection from '@/components/GallerySection';
 
 const Admin = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -16,6 +19,29 @@ const Admin = () => {
   const { user } = useSupabase();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const galleryImages = [
+    {
+      src: "/lovable-uploads/1d67ea84-a863-483f-9e89-b6c7fd2ce380.png",
+      alt: "Service image 1",
+      caption: "Quality Service"
+    },
+    {
+      src: "/lovable-uploads/d31dd35d-6e7c-4c2b-8fe9-4b9e2b26d4c4.png",
+      alt: "Service image 2",
+      caption: "Professional Care"
+    },
+    {
+      src: "/lovable-uploads/a1f1666e-6805-4b83-9476-db4cd9a9079d.png",
+      alt: "Service image 3",
+      caption: "Custom Solutions"
+    },
+    {
+      src: "/lovable-uploads/767ead22-789b-4626-8449-5ae430612cc3.png",
+      alt: "Service image 4",
+      caption: "Premium Experience"
+    }
+  ];
 
   useEffect(() => {
     const checkAdminStatus = async () => {
@@ -81,7 +107,81 @@ const Admin = () => {
           <div className="max-w-7xl mx-auto">
             <h1 className="text-2xl font-semibold text-gray-900 mb-6">Admin Dashboard</h1>
             
-            {activeView === 'bookings' && <AdminBookings />}
+            {activeView === 'bookings' && (
+              <div className="space-y-8">
+                <AdminBookings />
+                
+                {/* Haircut Services Section */}
+                <div className="bg-white shadow rounded-lg p-6">
+                  <h2 className="text-xl font-semibold mb-4">Haircut Services</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium">Haircut</h3>
+                      <p className="text-gray-600">KES 3,900</p>
+                    </div>
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium">Beard Trim</h3>
+                      <p className="text-gray-600">KES 2,600</p>
+                    </div>
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium">Hot Shave</h3>
+                      <p className="text-gray-600">KES 3,250</p>
+                    </div>
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium">Hair & Beard Combo</h3>
+                      <p className="text-gray-600">KES 5,850</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Massage Services Section */}
+                <div className="bg-white shadow rounded-lg p-6">
+                  <h2 className="text-xl font-semibold mb-4">Massage Services</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium">Head Massage</h3>
+                      <p className="text-gray-600">KES 3,250</p>
+                      <p className="text-sm text-gray-500">Duration: 20 minutes</p>
+                    </div>
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium">Face Massage</h3>
+                      <p className="text-gray-600">KES 2,600</p>
+                      <p className="text-sm text-gray-500">Duration: 15 minutes</p>
+                    </div>
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium">Shoulder & Back</h3>
+                      <p className="text-gray-600">KES 4,550</p>
+                      <p className="text-sm text-gray-500">Duration: 30 minutes</p>
+                    </div>
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium">Premium Package</h3>
+                      <p className="text-gray-600">KES 7,800</p>
+                      <p className="text-sm text-gray-500">Duration: 45 minutes</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Gallery Section */}
+                <div className="bg-white shadow rounded-lg p-6">
+                  <h2 className="text-xl font-semibold mb-4">Gallery</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {galleryImages.map((image, index) => (
+                      <div key={index} className="relative rounded-lg overflow-hidden h-36">
+                        <img 
+                          src={image.src} 
+                          alt={image.alt}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2">
+                          <p className="text-white text-sm">{image.caption}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            
             {activeView === 'staff' && (
               <div className="bg-white shadow rounded-lg p-6">
                 <h2 className="text-xl font-semibold mb-4">Staff Management</h2>
