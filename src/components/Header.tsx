@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { 
   Sheet, 
@@ -15,8 +14,12 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ activeSection, onSectionChange }) => {
-  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleLogoClick = () => {
+    // Navigate to booking section when logo is clicked
+    onSectionChange('booking');
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-black/40 backdrop-blur-md z-50">
@@ -24,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onSectionChange }) => {
         <div className="flex justify-between items-center h-16 px-4">
           <div 
             className="text-white font-playfair font-bold text-xl cursor-pointer"
-            onClick={() => navigate('/')}
+            onClick={handleLogoClick}
           >
             Project 1
           </div>
