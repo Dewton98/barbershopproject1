@@ -1,12 +1,5 @@
 
-import React, { useState } from 'react';
-import { Menu } from 'lucide-react';
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetTrigger 
-} from "@/components/ui/sheet";
-import SectionNavigation from './SectionNavigation';
+import React from 'react';
 
 interface HeaderProps {
   activeSection: 'booking' | 'haircut' | 'massage' | 'gallery';
@@ -14,8 +7,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ activeSection, onSectionChange }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const handleLogoClick = () => {
     // Navigate to booking section when logo is clicked
     onSectionChange('booking');
@@ -31,23 +22,6 @@ const Header: React.FC<HeaderProps> = ({ activeSection, onSectionChange }) => {
           >
             Project 1
           </div>
-          
-          <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-            <SheetTrigger asChild>
-              <button className="text-white p-2 rounded-md hover:bg-white/10">
-                <Menu size={24} />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="right" className="bg-black/80 backdrop-blur-md border-white/10">
-              <SectionNavigation 
-                activeSection={activeSection}
-                onSectionChange={(section) => {
-                  onSectionChange(section);
-                  setIsMenuOpen(false);
-                }} 
-              />
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
     </header>
