@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import BookingHistory, { Booking } from "@/components/BookingHistory";
@@ -8,14 +7,16 @@ import MassageServiceSection from "@/components/MassageServiceSection";
 import GallerySection from "@/components/GallerySection";
 import NavigationTabs from "@/components/NavigationTabs";
 import Header from "@/components/Header";
+import AdminBookings from "@/components/AdminBookings";
 import { supabase } from "@/integrations/supabase/client";
 import { useSupabase } from "@/integrations/supabase/provider";
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState<'booking' | 'history'>('booking');
+  const [activeTab, setActiveTab] = useState<'booking' | 'history' | 'admin'>('booking');
   const [activeSection, setActiveSection] = useState<'booking' | 'haircut' | 'massage' | 'gallery'>('booking');
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [barberPhone] = useState<string>('+254700000000');
   const { toast } = useToast();
   const { user } = useSupabase();
@@ -50,7 +51,23 @@ const Index = () => {
 
   useEffect(() => {
     fetchBookings();
+    checkAdminStatus();
   }, [user]);
+
+  const checkAdminStatus = async () => {
+    if (!user) {
+      setIsAdmin(false);
+      return;
+    }
+
+    try {
+      const isUserAdmin = user.email?.includes('admin') || false;
+      setIsAdmin(isUserAdmin);
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      setIsAdmin(false);
+    }
+  };
 
   const fetchBookings = async () => {
     setIsLoading(true);
@@ -237,15 +254,22 @@ const Index = () => {
     }
   };
 
-  const handleTabChange = (tab: 'booking' | 'history') => {
+  const handleTabChange = (tab: 'booking' | 'history' | 'admin') => {
     console.log('Changing tab to:', tab);
+    if (tab === 'admin' && !isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access the admin area",
+        variant: "destructive",
+      });
+      return;
+    }
     setActiveTab(tab);
   };
 
   const handleSectionChange = (section: 'booking' | 'haircut' | 'massage' | 'gallery') => {
     console.log('Changing section to:', section);
     setActiveSection(section);
-    // If the user is in history tab, switch to booking tab when selecting a section
     if (activeTab !== 'booking') {
       setActiveTab('booking');
     }
@@ -275,7 +299,6 @@ const Index = () => {
 
         {activeTab === 'booking' ? (
           <>
-            {/* Only render the active section */}
             {activeSection === 'booking' && (
               <section id="booking" className="scroll-mt-20">
                 <BookingForm
@@ -303,7 +326,7 @@ const Index = () => {
               </section>
             )}
           </>
-        ) : (
+        ) : activeTab === 'history' ? (
           <div className="bg-white/10 backdrop-blur-md dark:bg-gray-800/10 rounded-xl p-6 md:p-8 mb-8">
             {isLoading ? (
               <div className="py-8 text-center">
@@ -322,10 +345,65 @@ const Index = () => {
               </>
             )}
           </div>
-        )}
+        ) : activeTab === 'admin' && isAdmin ? (
+          <div className="bg-white/10 backdrop-blur-md dark:bg-gray-800/10 rounded-xl p-6 md:p-8 mb-8">
+            <h2 className="text-2xl font-semibold text-white mb-6">Admin Dashboard</h2>
+            
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-4">Bookings Management</h3>
+                <AdminBookings />
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-4">Services Overview</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div className="bg-white/20 p-4 rounded-md">
+                    <h4 className="font-medium text-white">Haircut</h4>
+                    <p className="text-gray-200">KES 3,900</p>
+                  </div>
+                  <div className="bg-white/20 p-4 rounded-md">
+                    <h4 className="font-medium text-white">Beard Trim</h4>
+                    <p className="text-gray-200">KES 2,600</p>
+                  </div>
+                  <div className="bg-white/20 p-4 rounded-md">
+                    <h4 className="font-medium text-white">Hot Shave</h4>
+                    <p className="text-gray-200">KES 3,250</p>
+                  </div>
+                  <div className="bg-white/20 p-4 rounded-md">
+                    <h4 className="font-medium text-white">Hair & Beard Combo</h4>
+                    <p className="text-gray-200">KES 5,850</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-4">Gallery</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {galleryImages.map((image, index) => (
+                    <div key={index} className="relative rounded-lg overflow-hidden h-36">
+                      <img 
+                        src={image.src} 
+                        alt={image.alt}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-2">
+                        <p className="text-white text-sm">{image.caption}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      <NavigationTabs activeTab={activeTab} onTabChange={handleTabChange} />
+      <NavigationTabs 
+        activeTab={activeTab} 
+        onTabChange={handleTabChange}
+        showAdmin={isAdmin || false}
+      />
     </div>
   );
 };

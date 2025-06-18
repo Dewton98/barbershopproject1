@@ -1,13 +1,14 @@
 
 import React from 'react';
-import { Calendar, History } from 'lucide-react';
+import { Calendar, History, Settings } from 'lucide-react';
 
 interface NavigationTabsProps {
-  activeTab: 'booking' | 'history';
-  onTabChange: (tab: 'booking' | 'history') => void;
+  activeTab: 'booking' | 'history' | 'admin';
+  onTabChange: (tab: 'booking' | 'history' | 'admin') => void;
+  showAdmin?: boolean;
 }
 
-const NavigationTabs: React.FC<NavigationTabsProps> = ({ activeTab, onTabChange }) => {
+const NavigationTabs: React.FC<NavigationTabsProps> = ({ activeTab, onTabChange, showAdmin = false }) => {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm border-t border-white/10">
       <div className="max-w-md mx-auto flex justify-around">
@@ -33,6 +34,19 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ activeTab, onTabChange 
           <History className="w-6 h-6" />
           <span className="text-sm mt-1">History</span>
         </button>
+        {showAdmin && (
+          <button
+            onClick={() => onTabChange('admin')}
+            className={`flex flex-col items-center py-4 px-6 transition-colors duration-200 ${
+              activeTab === 'admin'
+                ? 'text-callGreen'
+                : 'text-gray-400 hover:text-gray-200'
+            }`}
+          >
+            <Settings className="w-6 h-6" />
+            <span className="text-sm mt-1">Admin</span>
+          </button>
+        )}
       </div>
     </div>
   );
