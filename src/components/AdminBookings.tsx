@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Calendar, Clock, User, Check, X, Phone } from 'lucide-react';
 import type { Booking } from '@/components/BookingHistory';
+import AdminBookingsSkeleton from './AdminBookingsSkeleton';
 
 const AdminBookings = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -162,10 +163,7 @@ const AdminBookings = () => {
       </div>
       
       {loading ? (
-        <div className="py-12 text-center">
-          <div className="w-8 h-8 border-4 border-callGreen border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-500">Loading bookings...</p>
-        </div>
+        <AdminBookingsSkeleton />
       ) : bookings.length === 0 ? (
         <div className="py-12 text-center">
           <Calendar className="w-12 h-12 mx-auto text-gray-400 mb-4" />

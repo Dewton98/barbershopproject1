@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 import AdminBookings from "@/components/AdminBookings";
 import { supabase } from "@/integrations/supabase/client";
 import { useSupabase } from "@/integrations/supabase/provider";
+import { config } from '@/lib/config';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<'booking' | 'history' | 'admin'>('booking');
@@ -17,14 +18,11 @@ const Index = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [barberPhone] = useState<string>('+254700000000');
+  const [barberPhone] = useState<string>(config.app.barberPhone);
   const { toast } = useToast();
   const { user } = useSupabase();
 
-  const availableTimes = [
-    '09:00', '10:00', '11:00', '12:00', 
-    '14:00', '15:00', '16:00', '17:00'
-  ];
+  const availableTimes = config.businessHours.timeSlots;
 
   const galleryImages = [
     {
@@ -335,7 +333,7 @@ const Index = () => {
               </div>
             ) : (
               <>
-                <BookingHistory bookings={bookings} />
+                <BookingHistory bookings={bookings} isLoading={isLoading} />
                 <button 
                   onClick={addSampleBookings}
                   className="mt-4 bg-gray-700 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white px-4 py-2 rounded text-sm"
