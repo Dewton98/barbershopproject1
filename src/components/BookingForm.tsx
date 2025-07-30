@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Clock, Calendar, Scissors } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { useSupabaseErrorHandler, useNetworkErrorHandler } from "@/hooks/use-error-handler";
+import { useBookingValidation } from "@/hooks/use-booking-validation";
+import { useFormValidation, bookingFormRules } from "@/hooks/use-form-validation";
 import type { Booking as BookingType } from "@/components/BookingHistory";
 import BookingConfirmation from './BookingConfirmation';
 import SectionWindow from './SectionWindow';
@@ -10,6 +13,7 @@ import {
   validateKenyanPhoneNumber 
 } from '../services/africasTalkingService';
 import { useSupabase } from "@/integrations/supabase/provider";
+import { config } from '@/lib/config';
 
 interface BookingFormProps {
   availableTimes: string[];
@@ -34,33 +38,53 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [currentBooking, setCurrentBooking] = useState<Omit<BookingType, 'id' | 'status'> | null>(null);
   const [isSendingSMS, setIsSendingSMS] = useState<boolean>(false);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>(availableTimes);
+  const [isLoadingSlots, setIsLoadingSlots] = useState<boolean>(false);
   const { toast } = useToast();
   const { user } = useSupabase();
+  const handleSupabaseError = useSupabaseErrorHandler();
+  const handleNetworkError = useNetworkErrorHandler();
+  const { validateCompleteBooking, getAvailableTimeSlots } = useBookingValidation();
+  const { validateForm, validateSingleField, getFieldError, hasFieldError, clearAllErrors } = useFormValidation(bookingFormRules);
 
   const getServicePrice = (service: string): string => {
-    const priceMap: Record<string, string> = {
-      'Haircut': 'KES 3,900',
-      'Beard Trim': 'KES 2,600',
-      'Hot Shave': 'KES 3,250',
-      'Hair & Beard Combo': 'KES 5,850',
-      'Head Massage': 'KES 3,250',
-      'Face Massage': 'KES 2,600',
-      'Shoulder & Back': 'KES 4,550',
-      'Premium Package': 'KES 7,800'
-    };
-    return priceMap[service] || '';
+    const serviceConfig = config.services[service as keyof typeof config.services];
+    return serviceConfig ? `KES ${serviceConfig.price.toLocaleString()}` : '';
   };
 
-  const handleBooking = async () => {
-    if (!selectedDate || !selectedTime || !selectedService || !customerPhone) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields including your phone number",
-        variant: "destructive"
-      });
-      return;
-    }
+  // Update available time slots when date or service changes
+  useEffect(() => {
+    const updateAvailableSlots = async () => {
+      if (selectedDate && selectedService) {
+        setIsLoadingSlots(true);
+        try {
+          const slots = await getAvailableTimeSlots(selectedDate, selectedService);
+          setAvailableTimeSlots(slots);
+          
+          // If the currently selected time is no longer available, clear it
+          if (selectedTime && !slots.includes(selectedTime)) {
+            setSelectedTime('');
+            toast({
+              title: "Time Slot Unavailable",
+              description: "Your selected time is no longer available. Please choose another time.",
+              variant: "destructive"
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching available slots:', error);
+          setAvailableTimeSlots(availableTimes); // Fallback to all slots
+        } finally {
+          setIsLoadingSlots(false);
+        }
+      } else {
+        setAvailableTimeSlots(availableTimes);
+      }
+    };
 
+    updateAvailableSlots();
+  }, [selectedDate, selectedService, getAvailableTimeSlots, availableTimes, selectedTime, toast]);
+
+  const handleBooking = async () => {
     if (!user) {
       toast({
         title: "Authentication Required",
@@ -70,18 +94,43 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
       return;
     }
 
-    // Validate and format the phone number
-    const phoneValidation = validateKenyanPhoneNumber(customerPhone);
-    if (!phoneValidation.isValid) {
+    // Validate the form
+    const formData = {
+      selectedService,
+      selectedDate,
+      selectedTime,
+      customerPhone
+    };
+
+    const validationResult = validateForm(formData);
+    
+    if (!validationResult.isValid) {
+      const firstError = Object.values(validationResult.errors)[0];
       toast({
-        title: "Invalid Phone Number",
-        description: "Please enter a valid Kenyan phone number (07XXXXXXXX or +254XXXXXXXX)",
+        title: "Validation Error",
+        description: firstError,
         variant: "destructive"
       });
       return;
     }
-    
-    const formattedPhone = phoneValidation.formatted || customerPhone;
+
+    const formattedPhone = validationResult.formattedValues.customerPhone;
+
+    // Validate booking for double booking prevention
+    const bookingValidation = await validateCompleteBooking({
+      date: selectedDate,
+      time: selectedTime,
+      service: selectedService
+    });
+
+    if (!bookingValidation.isValid) {
+      toast({
+        title: "Booking Conflict",
+        description: bookingValidation.message,
+        variant: "destructive"
+      });
+      return;
+    }
     
     const newBooking = {
       service: selectedService,
@@ -94,6 +143,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
 
     setCurrentBooking(newBooking);
     setShowConfirmation(true);
+    clearAllErrors(); // Clear form validation errors on successful submission
     
     if (reminder) {
       setIsSendingSMS(true);
@@ -154,20 +204,27 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
             <label className="block text-white mb-2">Service</label>
             <select 
               value={selectedService}
-              onChange={(e) => setSelectedService(e.target.value)}
-              className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
+              onChange={(e) => {
+                setSelectedService(e.target.value);
+                validateSingleField('selectedService', e.target.value);
+              }}
+              className={`w-full bg-white/20 text-white border rounded-md p-2 ${
+                hasFieldError('selectedService') 
+                  ? 'border-red-400 focus:border-red-400' 
+                  : 'border-white/20 focus:border-purple-400'
+              }`}
               required
             >
               <option value="">Select a service</option>
-              <option value="Haircut">Haircut - KES 3,900</option>
-              <option value="Beard Trim">Beard Trim - KES 2,600</option>
-              <option value="Hot Shave">Hot Shave - KES 3,250</option>
-              <option value="Hair & Beard Combo">Hair & Beard Combo - KES 5,850</option>
-              <option value="Head Massage">Head Massage - KES 3,250</option>
-              <option value="Face Massage">Face Massage - KES 2,600</option>
-              <option value="Shoulder & Back">Shoulder & Back - KES 4,550</option>
-              <option value="Premium Package">Premium Package - KES 7,800</option>
+              {Object.entries(config.services).map(([serviceName, serviceConfig]) => (
+                <option key={serviceName} value={serviceName}>
+                  {serviceName} - KES {serviceConfig.price.toLocaleString()} ({serviceConfig.duration}min)
+                </option>
+              ))}
             </select>
+            {getFieldError('selectedService') && (
+              <p className="text-red-300 text-sm mt-1">{getFieldError('selectedService')}</p>
+            )}
           </div>
 
           <div>
@@ -175,26 +232,68 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
             <input 
               type="date"
               value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
+              onChange={(e) => {
+                setSelectedDate(e.target.value);
+                validateSingleField('selectedDate', e.target.value);
+              }}
+              className={`w-full bg-white/20 text-white border rounded-md p-2 ${
+                hasFieldError('selectedDate') 
+                  ? 'border-red-400 focus:border-red-400' 
+                  : 'border-white/20 focus:border-purple-400'
+              }`}
               min={new Date().toISOString().split('T')[0]}
+              max={(() => {
+                const maxDate = new Date();
+                maxDate.setDate(maxDate.getDate() + 30);
+                return maxDate.toISOString().split('T')[0];
+              })()}
               required
             />
+            {getFieldError('selectedDate') && (
+              <p className="text-red-300 text-sm mt-1">{getFieldError('selectedDate')}</p>
+            )}
           </div>
 
           <div>
-            <label className="block text-white mb-2">Time</label>
+            <label className="block text-white mb-2">
+              Time {isLoadingSlots && <span className="text-purple-300">(Loading available slots...)</span>}
+            </label>
             <select 
               value={selectedTime}
-              onChange={(e) => setSelectedTime(e.target.value)}
-              className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
+              onChange={(e) => {
+                setSelectedTime(e.target.value);
+                validateSingleField('selectedTime', e.target.value);
+              }}
+              className={`w-full bg-white/20 text-white border rounded-md p-2 ${
+                hasFieldError('selectedTime') 
+                  ? 'border-red-400 focus:border-red-400' 
+                  : 'border-white/20 focus:border-purple-400'
+              }`}
+              disabled={isLoadingSlots || !selectedDate || !selectedService}
               required
             >
-              <option value="">Select a time</option>
-              {availableTimes.map((time) => (
+              <option value="">
+                {isLoadingSlots 
+                  ? "Loading..." 
+                  : !selectedDate || !selectedService 
+                    ? "Select service and date first"
+                    : availableTimeSlots.length === 0
+                      ? "No available slots"
+                      : "Select a time"
+                }
+              </option>
+              {availableTimeSlots.map((time) => (
                 <option key={time} value={time}>{time}</option>
               ))}
             </select>
+            {getFieldError('selectedTime') && (
+              <p className="text-red-300 text-sm mt-1">{getFieldError('selectedTime')}</p>
+            )}
+            {selectedDate && selectedService && !isLoadingSlots && availableTimeSlots.length === 0 && (
+              <p className="text-red-300 text-sm mt-1">
+                No available time slots for this date. Please choose a different date.
+              </p>
+            )}
           </div>
 
           <div>
@@ -202,12 +301,23 @@ const BookingForm: React.FC<BookingFormProps> = ({ availableTimes, onBookingSubm
             <input 
               type="tel"
               value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
+              onChange={(e) => {
+                setCustomerPhone(e.target.value);
+                validateSingleField('customerPhone', e.target.value);
+              }}
               placeholder="07XXXXXXXX or +254XXXXXXXX"
-              className="w-full bg-white/20 text-white border border-white/20 rounded-md p-2"
+              className={`w-full bg-white/20 text-white border rounded-md p-2 ${
+                hasFieldError('customerPhone') 
+                  ? 'border-red-400 focus:border-red-400' 
+                  : 'border-white/20 focus:border-purple-400'
+              }`}
               required
             />
-            <p className="text-gray-300 text-xs mt-1">Format: 07XXXXXXXX or +254XXXXXXXX</p>
+            {getFieldError('customerPhone') ? (
+              <p className="text-red-300 text-sm mt-1">{getFieldError('customerPhone')}</p>
+            ) : (
+              <p className="text-gray-300 text-xs mt-1">Format: 07XXXXXXXX or +254XXXXXXXX</p>
+            )}
           </div>
 
           <div className="flex items-center col-span-2">

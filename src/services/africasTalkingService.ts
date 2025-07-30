@@ -2,15 +2,16 @@
 // Africa's Talking SMS Service
 // This service integrates with Africa's Talking API to send SMS notifications
 
+import { config } from '@/lib/config';
+
 interface SMSResponse {
   success: boolean;
   message: string;
   data?: any;
 }
 
-// Default API endpoint for Africa's Talking SMS API
-const AT_API_URL = "https://api.africastalking.com/version1/messaging";
-const AT_USERNAME = "your_username"; // Replace with your actual username
+// Get configuration from centralized config
+const { africasTalking } = config;
 
 export const sendSMS = async (
   phoneNumber: string, 
@@ -24,7 +25,7 @@ export const sendSMS = async (
     // 2. Simulation mode (for local testing without credentials)
     
     // Check if we're in development/demo mode
-    const isDemoMode = true; // Set to false when deploying with real credentials
+    const isDemoMode = africasTalking.demoMode;
     
     if (isDemoMode) {
       // Simulate API call for demo purposes
@@ -44,16 +45,16 @@ export const sendSMS = async (
       // Real API implementation for production use
       // This would use the Africa's Talking API
       const formData = new URLSearchParams();
-      formData.append('username', AT_USERNAME);
+      formData.append('username', africasTalking.username);
       formData.append('to', phoneNumber);
       formData.append('message', message);
       
-      const response = await fetch(AT_API_URL, {
+      const response = await fetch(africasTalking.apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json',
-          'apiKey': 'YOUR_API_KEY' // This should be stored in environment variables
+          'apiKey': africasTalking.apiKey
         },
         body: formData.toString()
       });
@@ -84,7 +85,7 @@ export const formatAppointmentReminderMessage = (
   date: string,
   time: string
 ): string => {
-  return `REMINDER: Your appointment for ${service} is scheduled for ${date} at ${time}. Thank you for choosing Premium Barber Shop.`;
+  return `REMINDER: Your appointment for ${service} is scheduled for ${date} at ${time}. Thank you for choosing ${config.app.name}.`;
 };
 
 export const validateKenyanPhoneNumber = (phoneNumber: string): { isValid: boolean; formatted?: string } => {
@@ -120,15 +121,15 @@ export const formatScheduledMessage = (
   
   switch (type) {
     case 'booking':
-      return `${greeting}, your appointment for ${service} has been confirmed for ${date} at ${time}. We look forward to seeing you at Premium Barber Shop.`;
+      return `${greeting}, your appointment for ${service} has been confirmed for ${date} at ${time}. We look forward to seeing you at ${config.app.name}.`;
     
     case 'reminder':
-      return `${greeting}, this is a reminder that your appointment for ${service} is scheduled for tomorrow, ${date} at ${time}. We look forward to seeing you at Premium Barber Shop.`;
+      return `${greeting}, this is a reminder that your appointment for ${service} is scheduled for tomorrow, ${date} at ${time}. We look forward to seeing you at ${config.app.name}.`;
     
     case 'cancellation':
       return `${greeting}, your appointment for ${service} scheduled on ${date} at ${time} has been cancelled. Please contact us to reschedule.`;
     
     default:
-      return `${greeting}, you have an appointment for ${service} on ${date} at ${time} at Premium Barber Shop.`;
+      return `${greeting}, you have an appointment for ${service} on ${date} at ${time} at ${config.app.name}.`;
   }
 };

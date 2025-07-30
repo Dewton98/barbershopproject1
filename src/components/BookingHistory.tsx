@@ -2,6 +2,7 @@
 import React from 'react';
 import { History, Calendar, Clock, Scissors, Bell, BellOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import BookingHistorySkeleton from './BookingHistorySkeleton';
 
 // Define the booking type
 export interface Booking {
@@ -17,9 +18,10 @@ export interface Booking {
 
 interface BookingHistoryProps {
   bookings: Booking[];
+  isLoading?: boolean;
 }
 
-const BookingHistory = ({ bookings }: BookingHistoryProps) => {
+const BookingHistory = ({ bookings, isLoading = false }: BookingHistoryProps) => {
   // Debug check - Ensure bookings are being passed correctly
   console.log('BookingHistory received bookings:', bookings);
   
@@ -39,7 +41,9 @@ const BookingHistory = ({ bookings }: BookingHistoryProps) => {
         <h2 className="text-2xl font-semibold text-white mb-1">Your Booking History</h2>
         <p className="text-gray-300 text-sm mb-4">With SMS notifications via Africa's Talking</p>
         
-        {(!bookings || bookings.length === 0) ? (
+        {isLoading ? (
+          <BookingHistorySkeleton />
+        ) : (!bookings || bookings.length === 0) ? (
           <div className="text-center py-12">
             <History className="w-12 h-12 mx-auto text-gray-400 mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">No Bookings Yet</h3>
